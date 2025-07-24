@@ -1,0 +1,1592 @@
+/* ================================================== */
+/* ===== V8 "SUNSET WAVES" - FINAL STYLE.CSS ====== */
+/* ================================================== */
+
+/* --- NEW ORANGE-PINK COLOR SCHEME --- */
+:root {
+    --bg-color: #1a0b3a;          /* A deep purple for the base */
+    --panel-bg: rgba(36, 20, 70, 0.65);
+    --input-bg: #241448;
+    --border-color: rgba(255, 129, 112, 0.2); /* Soft pink border */
+    --text-primary: #fbe9e7;
+    --text-secondary: #e1bee7;
+    --gradient-start: #ff8170;    /* Sunset Orange */
+    --gradient-mid: #ff4e87;      /* Vibrant Pink */
+    --accent-glow: rgba(255, 78, 135, 0.4);
+    --main-gradient: linear-gradient(90deg, var(--gradient-start), var(--gradient-mid));
+}
+
+/* --- NEW ANIMATED BACKGROUND --- */
+@keyframes waveAnimation {
+    0% {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+
+    100% {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    margin: 0;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+}
+
+body::before,
+body::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+body::before {
+    background: radial-gradient(circle at 20% 30%, var(--gradient-start), transparent 40%),
+        radial-gradient(circle at 80% 70%, var(--gradient-mid), transparent 40%);
+    width: 200%;
+    height: 200%;
+    top: 50%;
+    left: 50%;
+    animation: waveAnimation 25s linear infinite;
+}
+
+body::after {
+    background: radial-gradient(circle at 50% 50%, rgba(255, 78, 135, 0.3), transparent 30%);
+    width: 150%;
+    height: 150%;
+    top: 50%;
+    left: 50%;
+    animation: waveAnimation 35s linear infinite reverse;
+}
+
+/* --- HOMEPAGE STYLES --- */
+.homepage-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    padding: 4rem 2rem;
+    max-width: 1400px;
+    margin: 5vh auto;
+    gap: 3rem;
+    text-align: center;
+    /* Glassmorphism effect */
+    background: rgba(26, 11, 58, 0.4);
+    border-radius: 24px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    backdrop-filter: blur(12.5px);
+    -webkit-backdrop-filter: blur(12.5px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.homepage-container .app-header {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.homepage-container .header-content {
+    gap: 1rem;
+}
+
+/* --- ADD THIS NEW BLOCK TO YOUR CSS --- */
+
+/* Homepage Logo Image */
+.kairo-logo-image {
+    width: 100%;             /* Makes the image responsive within its container */
+    max-width: 550px;        /* Sets a maximum size to prevent it from being too large on big screens */
+    height: auto;            /* Maintains the correct aspect ratio */
+    margin-bottom: 1rem;     /* Adds a little space between the logo and the paragraph below it */
+}
+
+.homepage-container .header-content p {
+    font-size: 1.25rem;
+    max-width: 600px;
+    color: var(--text-secondary);
+}
+
+.tool-selection {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem;
+    width: 100%;
+}
+
+.tool-card {
+    flex: 0 0 360px;
+    /* FIX: Prevents cards from growing to fill space */
+    background: rgba(26, 11, 58, 0.6);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-decoration: none;
+    color: var(--text-primary);
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.tool-card:hover {
+    transform: translateY(-10px);
+    border-color: var(--gradient-mid);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2), 0 0 40px var(--accent-glow);
+}
+
+.tool-card::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(800px circle at var(--mouse-x) var(--mouse-y), var(--accent-glow), transparent 40%);
+    border-radius: inherit;
+    opacity: 0;
+    transition: opacity 0.5s;
+    z-index: 0;
+}
+
+.tool-card:hover::before {
+    opacity: 1;
+}
+
+.tool-card .icon,
+.tool-card h2,
+.tool-card p {
+    position: relative;
+    z-index: 1;
+}
+
+.tool-card .icon {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 1.5rem;
+    color: var(--gradient-start);
+}
+
+.tool-card .icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.tool-card h2 {
+    font-size: 1.5rem;
+    margin: 0 0 0.5rem 0;
+    color: var(--text-primary);
+}
+
+.tool-card p {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    font-size: 1rem;
+}
+
+
+/* --- INNER APP STYLES (3-COLUMN LAYOUT) --- */
+.app-container {
+    display: grid;
+    grid-template-columns: 450px 1fr 400px;
+    align-items: flex-start;
+    gap: 2rem;
+    padding: 2rem;
+    width: 100%;
+    max-width: 1400px;
+    margin: auto;
+    box-sizing: border-box;
+}
+
+.controls-panel,
+.info-panel {
+    height: calc(100vh - 4rem);
+    display: flex;
+    flex-direction: column;
+}
+
+.canvas-panel {
+    height: calc(100vh - 4rem);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1.5rem;
+}
+
+.controls-panel,
+#image-wrapper,
+.info-panel {
+    border: 2px solid transparent;
+    border-radius: 16px;
+    background: linear-gradient(var(--input-bg), var(--input-bg)) padding-box, var(--main-gradient) border-box;
+}
+
+.app-header {
+    display: grid; /* CHANGED from flex */
+    grid-template-columns: 1fr auto 1fr; /* Creates three columns: [Left Space] [Center Content] [Right Space] */
+    align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 1.5rem;
+    position: relative; /* Keep for the back-link's absolute positioning relative to the header */
+}
+.back-link {
+    /* No longer needs position:absolute or top/transform. It sits in the first grid column. */
+    grid-column: 1 / 2;
+    justify-self: start; /* Aligns the link to the very left of its column */
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    text-decoration: none;
+    color: var(--text-secondary);
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+.back-link:hover {
+    color: var(--text-primary);
+    background-color: var(--input-bg);
+}
+
+.back-link:hover {
+    color: var(--text-primary);
+    background-color: var(--input-bg);
+}
+
+.header-content {
+    grid-column: 2 / 3; /* This places the content squarely in the center column */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.header-content h1 {
+    font-size: 2rem;
+    margin: 1 1 1 1 ;
+    line-height: 1.2;
+}
+
+.controls-panel {
+    padding: 1.5rem 2rem;
+}
+
+.control-groups-wrapper {
+    overflow-y: auto;
+    padding-right: 0.5rem;
+    flex-grow: 1;
+}
+
+.control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.control-group h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.75rem;
+}
+
+.control-group h3 .icon {
+    width: 24px;
+    height: 24px;
+    color: var(--gradient-start);
+}
+
+.prompt-container {
+    border: 2px solid transparent;
+    border-radius: 12px;
+    padding: 1rem;
+    background: linear-gradient(var(--input-bg), var(--input-bg)) padding-box, var(--main-gradient) border-box;
+}
+
+.prompt-container textarea {
+    width: 100%;
+    min-height: 110px;
+    border: none;
+    background: transparent;
+    padding: 0;
+    color: var(--text-primary);
+    resize: vertical;
+}
+
+textarea,
+input[type="text"],
+select {
+    background-color: var(--input-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    border-radius: 8px;
+    padding: 0.75rem;
+    font-family: inherit;
+    font-size: 0.9rem;
+    transition: border-color 0.2s;
+}
+
+textarea:focus,
+input[type="text"]:focus,
+select:focus {
+    outline: none;
+    border-color: var(--gradient-start);
+}
+
+
+.seed-container {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.seed-container label {
+    flex-shrink: 0;
+    color: var(--text-secondary);
+}
+
+.seed-container input {
+    flex-grow: 1;
+}
+
+#randomize-seed {
+    background-color: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    width: 44px;
+    height: 44px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.2s;
+}
+
+#randomize-seed:hover {
+    border-color: var(--gradient-start);
+    transform: scale(1.05);
+}
+
+#randomize-seed .icon {
+    width: 24px;
+    height: 24px;
+    color: var(--text-secondary);
+}
+
+.upload-area {
+    flex: 1;
+    min-height: 150px;
+    background-color: var(--input-bg);
+    border: 2px dashed var(--border-color);
+    border-radius: 12px;
+    padding: 1rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.upload-area:hover {
+    border-color: var(--gradient-start);
+    background-color: #311f5e;
+}
+
+.upload-area input[type="file"] {
+    display: none;
+}
+
+.upload-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    pointer-events: none;
+    color: var(--text-secondary);
+}
+
+.upload-area .upload-content .icon {
+    width: 32px;
+    height: 32px;
+}
+
+.upload-area img.preview {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+    pointer-events: none;
+}
+
+#generate-button {
+    background-image: var(--main-gradient);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 1rem;
+    font-size: 1.2rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 1rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+#generate-button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px var(--accent-glow);
+}
+
+#generate-button:disabled {
+    background: #333;
+    color: #777;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+#image-wrapper {
+    width: 100%;
+    max-width: 80vh;
+    aspect-ratio: 1 / 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+#output-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.placeholder-text {
+    color: var(--text-secondary);
+}
+
+#status {
+    padding: 0.5rem 1rem;
+    background-color: var(--input-bg);
+    border-radius: 8px;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    text-align: center;
+    border: 1px solid var(--border-color);
+}
+
+#loader {
+    width: 60px;
+    height: 60px;
+    border: 5px solid rgba(255, 255, 255, 0.2);
+    border-bottom-color: var(--gradient-start);
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+    position: absolute;
+}
+
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.hidden {
+    display: none !important;
+}
+
+.action-bar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.action-button {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background-image: var(--main-gradient);
+    color: white;
+}
+
+.action-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px var(--accent-glow);
+}
+
+#generation-details {
+    width: 100%;
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1rem 1.5rem;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    max-height: 200px;
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+
+#generation-details h4 {
+    margin: 0 0 0.75rem 0;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.5rem;
+}
+
+.info-panel {
+    padding: 1.5rem;
+}
+
+.info-panel h4 {
+    margin: 0 0 1rem 0;
+    color: var(--text-primary);
+    font-size: 1.2rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.75rem;
+}
+
+.prompt-guide-content {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding-right: 1rem;
+}
+
+.prompt-guide-content p,
+.prompt-guide-content li {
+    line-height: 1.7;
+}
+
+.prompt-guide-content strong {
+    color: var(--text-primary);
+}
+
+.prompt-guide-content ul {
+    padding-left: 20px;
+    margin: 0.5rem 0 1.5rem 0;
+}
+
+.prompt-guide-content code {
+    background: var(--input-bg);
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-family: monospace;
+    font-size: 0.85rem;
+}
+
+#progress-container {
+    width: 100%;
+    max-width: 80vh;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    box-sizing: border-box;
+}
+
+#progress-bar-track {
+    width: 100%;
+    height: 12px;
+    background-color: var(--input-bg);
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+}
+
+#progress-bar-fill {
+    width: 0%;
+    height: 100%;
+    background-image: var(--main-gradient);
+    border-radius: 6px;
+    transition: width 0.2s ease-out;
+}
+
+.progress-details {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    font-family: monospace;
+}
+
+textarea::-webkit-scrollbar,
+.info-panel::-webkit-scrollbar,
+.prompt-guide-content::-webkit-scrollbar,
+.control-groups-wrapper::-webkit-scrollbar {
+    width: 8px;
+}
+
+textarea::-webkit-scrollbar-track,
+.info-panel::-webkit-scrollbar-track,
+.prompt-guide-content::-webkit-scrollbar-track,
+.control-groups-wrapper::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+textarea::-webkit-scrollbar-thumb,
+.info-panel::-webkit-scrollbar-thumb,
+.prompt-guide-content::-webkit-scrollbar-thumb,
+.control-groups-wrapper::-webkit-scrollbar-thumb {
+    background-color: var(--border-color);
+    border-radius: 4px;
+}
+
+textarea::-webkit-scrollbar-thumb:hover,
+.info-panel::-webkit-scrollbar-thumb:hover,
+.prompt-guide-content::-webkit-scrollbar-thumb:hover,
+.control-groups-wrapper::-webkit-scrollbar-thumb:hover {
+    background-color: #ff8170;
+}
+
+@media (max-width: 1200px) {
+    .app-container {
+        grid-template-columns: 380px 1fr;
+    }
+
+    .info-panel {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .app-container {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .controls-panel,
+    .canvas-panel,
+    .info-panel {
+        height: auto;
+    }
+}
+
+.upload-container {
+    display: flex;
+    gap: 1rem;
+    width: 100%;
+}
+
+.stitch-direction-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.stitch-direction-group label {
+    font-weight: 400;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+select {
+    -webkit-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23e1bee7' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.5rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+    padding-right: 2.5rem;
+}
+
+.transform-type-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.transform-type-group label {
+    font-weight: 400;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+/* ADD THIS AT THE END OF style.css */
+
+/* --- HOMEPAGE ABOUT SECTION --- */
+.about-section {
+    width: 100%;
+    margin-top: 2rem; /* Adds some space above the section */
+    padding: 2.5rem;
+    box-sizing: border-box;
+    background: rgba(10, 25, 65, 0.4); /* Matches the card background for consistency */
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    text-align: left; /* Align text to the left for readability */
+}
+
+.about-section h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-primary);
+}
+
+.about-section .about-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive columns */
+    gap: 2rem;
+}
+
+.about-section .about-column p {
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin: 0 0 1rem 0;
+}
+
+.about-section .about-column h3 {
+    font-size: 1.2rem;
+    color: var(--gradient-start); /* Use the accent color for subheadings */
+    margin-bottom: 0.75rem;
+}
+
+.about-section .tech-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.about-section .tech-list li {
+    background-color: var(--input-bg);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+    font-weight: 500;
+    border-left: 3px solid var(--gradient-mid);
+}
+/* ========================================================== */
+/* ===== ADDITIONS FOR COLLAPSIBLE SETTINGS ANIMATION ===== */
+/* ========================================================== */
+
+/* --- Flex layout to position the generate button at the bottom --- */
+.controls-panel {
+    display: flex;
+    flex-direction: column;
+}
+
+/* ========================================================== */
+/* ===== V9 - COLLAPSIBLE PANELS & ROBUST SLIDERS         ===== */
+/* ========================================================== */
+
+/* --- Main panel layout to position Generate button at the bottom --- */
+.controls-panel {
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- Collapsible Settings Section Header --- */
+.control-group h3.collapsible-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+    /* Reset h3 styles to act like a button */
+    margin-bottom: 0; 
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.control-group h3.collapsible-header:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.collapsible-header .header-main-content {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem; /* Matches original h3 icon gap */
+}
+
+/* --- Chevron Icon Styling & Animation --- */
+.collapsible-header .chevron-icon {
+    transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.control-group.expanded .chevron-icon {
+    transform: rotate(180deg);
+}
+
+/* --- Collapsible Content Panel Styling & Animation --- */
+.collapsible-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s cubic-bezier(0.25, 1, 0.5, 1),
+                padding-top 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+    /* Add padding for a cleaner look when expanded */
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
+
+/* --- State when the panel is expanded --- */
+.control-group.expanded .collapsible-header {
+     border-bottom-color: transparent; /* Hide border when open */
+}
+
+.control-group.expanded .collapsible-content {
+    max-height: 500px; /* Adjust if your content is ever taller */
+    padding-top: 1.5rem; /* Space between header and content */
+}
+
+/* --- Staggered Fade-in Animation for Content --- */
+.collapsible-content > * {
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+}
+.control-group.expanded .collapsible-content > * {
+    opacity: 1;
+    transform: translateY(0);
+}
+/* Apply a delay to each child element */
+.control-group.expanded .collapsible-content > *:nth-child(1) { transition-delay: 0.05s; }
+.control-group.expanded .collapsible-content > *:nth-child(2) { transition-delay: 0.1s; }
+.control-group.expanded .collapsible-content > *:nth-child(3) { transition-delay: 0.15s; }
+.control-group.expanded .collapsible-content > *:nth-child(4) { transition-delay: 0.2s; }
+.control-group.expanded .collapsible-content > *:nth-child(5) { transition-delay: 0.25s; }
+
+/* ========================================================== */
+/*     SLIDER STYLING (V3 - THE DEFINITIVE, ROBUST FIX)     */
+/* ========================================================== */
+
+/* --- Grid Layout for each slider group (This part is fine and remains the same) --- */
+.slider-group {
+    display: grid;
+    grid-template-columns: auto 1fr; 
+    align-items: center;
+    row-gap: 0.5rem;
+    column-gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.slider-group label {
+    grid-column: 1 / 2;
+    font-weight: 500;
+    color: var(--text-primary);
+    font-size: 1rem;
+}
+
+.slider-group .slider-value {
+    grid-column: 2 / 3;
+    justify-self: end;
+    font-family: monospace;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+}
+
+.slider-container {
+    grid-column: 1 / 3;
+}
+
+
+/* --- Core Slider Styling (NEW METHOD) --- */
+
+/* Reset slider to a blank state for custom styling */
+input[type="range"] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 20px; /* Set height to match the thumb for easier alignment */
+    background: transparent; /* Make the default track invisible */
+    cursor: pointer;
+    outline: none;
+}
+
+/* --- Track Styling for Chrome, Safari, Edge --- */
+input[type="range"]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 8px;
+    background: var(--input-bg);
+    border-radius: 4px;
+    
+    /* NEW METHOD: This layers a colored gradient on top of the track */
+    /* and we use background-size (controlled by JS) to reveal it. */
+    background-image: linear-gradient(var(--gradient-start), var(--gradient-start));
+    background-size: var(--value, 0%) 100%;
+    background-repeat: no-repeat;
+}
+
+/* --- Thumb Styling for Chrome, Safari, Edge --- */
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: white;
+    border: 3px solid var(--gradient-start);
+    border-radius: 50%;
+    /* This negative margin pulls the thumb up to align with our new track */
+    margin-top: -6px; 
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+    box-shadow: 0 0 10px var(--accent-glow);
+}
+
+
+/* --- Track and Thumb Styling for Firefox --- */
+input[type="range"]::-moz-range-track {
+    width: 100%;
+    height: 8px;
+    background: var(--input-bg);
+    border-radius: 4px;
+}
+
+/* This is a special Firefox-only element for the colored fill */
+input[type="range"]::-moz-range-progress {
+    height: 8px;
+    background: var(--gradient-start);
+    border-radius: 4px;
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: 14px; /* Firefox includes the border in the width */
+    height: 14px;
+    background: white;
+    border: 3px solid var(--gradient-start);
+    border-radius: 50%;
+}
+
+/* --- ADD THIS AT THE END OF style.css --- */
+
+/* --- HOMEPAGE STATUS TERMINAL --- */
+#comfy-status-output {
+    background-color: rgba(0, 0, 0, 0.35); /* Dark, slightly transparent background */
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 1.5rem; /* Space between description and terminal */
+    width: 100%;
+    max-width: 700px;
+    height: 160px; /* Fixed height for the terminal box */
+    overflow-y: auto; /* Enable scrolling for overflow */
+    text-align: left;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.8rem;
+    line-height: 1.4;
+    color: var(--text-secondary);
+    white-space: pre-wrap; /* Wrap long lines of text */
+    box-sizing: border-box;
+    transition: border-color 0.4s ease;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Special style for when the server is ready */
+#comfy-status-output.ready {
+    border-color: #41ff8c; /* A vibrant green to signify success */
+}
+
+/* Custom scrollbar for the terminal element */
+#comfy-status-output::-webkit-scrollbar {
+    width: 6px;
+}
+
+#comfy-status-output::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#comfy-status-output::-webkit-scrollbar-thumb {
+    background-color: var(--border-color);
+    border-radius: 3px;
+}
+
+/* --- ADD THIS AT THE END OF style.css --- */
+
+/* --- HOMEPAGE STARTUP PROGRESS LOADER --- */
+.startup-loader-container {
+    width: 100%;
+    max-width: 700px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+    transition: opacity 0.5s ease-out; /* For fade-out effect */
+}
+
+.startup-loader-container .progress-bar-track {
+    width: 100%;
+    height: 12px;
+    background-color: var(--input-bg);
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+}
+
+.startup-loader-container .progress-bar-fill {
+    width: 0%;
+    height: 100%;
+    background-image: var(--main-gradient);
+    border-radius: 6px;
+    transition: width 0.4s cubic-bezier(0.25, 1, 0.5, 1); /* Smooth transition */
+}
+
+/* Special style for when the progress bar is complete */
+.startup-loader-container .progress-bar-fill.ready {
+    background-image: linear-gradient(90deg, #41ff8c, #00d975); /* Vibrant green gradient */
+}
+
+.startup-loader-container .progress-details {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.startup-loader-container .progress-details #startup-progress-percent {
+    font-family: monospace;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+/* --- ADD THIS AT THE END OF style.css --- */
+.settings-link {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    color: var(--text-secondary);
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.settings-link:hover {
+    color: var(--text-primary);
+    background-color: var(--input-bg);
+    transform: rotate(45deg);
+}
+
+.settings-link svg {
+    width: 28px;
+    height: 28px;
+    display: block;
+}
+.hidden-content {
+    opacity: 0;
+    visibility: hidden;
+    height: 0;
+    overflow: hidden;
+}
+
+/* Style for the content when it becomes visible */
+.visible-content {
+    opacity: 1;
+    visibility: visible;
+    height: auto;
+    transition: opacity 0.7s ease-in; /* A smooth fade-in transition */
+}
+
+/* --- In style.css, REPLACE the old .settings-link rules with this --- */
+
+.settings-link {
+    /* Positioning */
+    position: absolute;
+    top: 2.5rem; /* Match the padding of homepage-container */
+    right: 2.5rem;
+
+    /* Appearance */
+    background: rgba(26, 11, 58, 0.6); /* Same as tool-card */
+    border: 1px solid var(--border-color);
+    border-radius: 50%; /* Make it a circle */
+    width: 56px;  /* Fixed size */
+    height: 56px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--text-secondary);
+    
+    /* Effects & Transitions */
+    overflow: hidden; /* Important for the ::before glow effect */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.settings-link:hover {
+    transform: translateY(-5px) rotate(45deg); /* Lift and rotate on hover */
+    border-color: var(--gradient-mid);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2), 0 0 40px var(--accent-glow);
+    color: var(--text-primary);
+}
+
+/* Re-use the ::before pseudo-element for the mouse-follow glow */
+.settings-link::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(800px circle at var(--mouse-x) var(--mouse-y), var(--accent-glow), transparent 40%);
+    border-radius: inherit;
+    opacity: 0;
+    transition: opacity 0.5s;
+    z-index: 0;
+}
+
+.settings-link:hover::before {
+    opacity: 1;
+}
+
+.settings-link svg {
+    width: 28px;
+    height: 28px;
+    position: relative; /* Ensure icon is above the ::before glow */
+    z-index: 1;
+}
+
+/* Add this line to make the homepage-container a positioning context */
+.homepage-container {
+    position: relative; /* This is crucial for the absolute positioning of the settings link */
+    /* ... keep all other existing .homepage-container styles ... */
+}
+
+/* --- Queue Status and Stop Button --- */
+#queue-status-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+    width: 100%;
+    max-width: 80vh;
+    padding: 1.5rem;
+    box-sizing: border-box;
+    margin-top: 1rem;
+
+    /* CORRECTED BORDER PROPERTIES */
+    border: 2px solid transparent;
+    border-radius: 12px; /* Match the other new containers */
+    background: linear-gradient(var(--input-bg), var(--input-bg)) padding-box, 
+                var(--main-gradient) border-box;
+}
+
+#queue-status-wrapper.hidden {
+    display: none;
+}
+
+.queue-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;   /* Center the text lines within this block */
+    gap: 0.35rem;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-family: monospace;
+}
+
+#queue-info #executing-node {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+/* Special styling for the stop button */
+.action-button.stop {
+    background-image: linear-gradient(90deg, #ff715b, #ff4d4d);
+    padding: 0.5rem 1.5rem; /* Adjust padding for better proportions */
+    font-size: 1rem;
+    display: inline-flex;  /* Ensure icon and text align properly */
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.action-button.stop:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(255, 77, 77, 0.4);
+}
+
+#generation-details,
+#status {
+    border: 2px solid transparent;
+    border-radius: 12px; /* A slightly smaller radius than the main panels */
+    background: linear-gradient(var(--input-bg), var(--input-bg)) padding-box, 
+                var(--main-gradient) border-box;
+    /* Reset padding if it was set differently before */
+    padding: 1rem 1.5rem; 
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 80vh;
+}
+
+/* Ensure the status text is centered and looks good with the new border */
+#status {
+    text-align: center;
+    padding: 0.75rem 1.5rem;
+}
+
+/* Apply custom scrollbar to Generation Details box */
+#generation-details::-webkit-scrollbar {
+    width: 8px;
+}
+
+#generation-details::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#generation-details::-webkit-scrollbar-thumb {
+    background-color: var(--border-color);
+    border-radius: 4px;
+}
+
+#generation-details::-webkit-scrollbar-thumb:hover {
+    background-color: var(--gradient-start);
+}
+
+/* Add this to the end of your style.css */
+
+.client-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+.client-modal-overlay.hidden {
+    display: none;
+    opacity: 0;
+}
+
+.client-modal-content {
+    background: #1a1a1a;
+    padding: 2rem;
+    border-radius: 12px;
+    border: 1px solid #333;
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+    color: #f0f0f0;
+}
+
+.client-modal-content h2 {
+    margin-top: 0;
+}
+
+.client-modal-content .small-text {
+    font-size: 0.9rem;
+    color: #999;
+    margin-bottom: 1rem;
+}
+
+.client-modal-content input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #444;
+    background: #222;
+    color: #fff;
+    font-size: 1rem;
+    box-sizing: border-box;
+    margin-bottom: 1rem;
+}
+
+.client-modal-content button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    background: #007aff;
+    color: white;
+    font-weight: 500;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.client-modal-content button:hover {
+    background: #0056b3;
+}
+
+.client-modal-content .status-text {
+    margin-top: 1rem;
+    color: #ff9500; /* Orange for 'connecting' */
+}
+.action-bar button.action-button {
+    font-family: inherit; /* Make sure the button uses the right font */
+}
+
+/* ADD THIS AT THE END OF style.css */
+
+/* --- HOMEPAGE HOST ADDRESS DISPLAY --- */
+#host-address-container {
+    width: 100%;
+    max-width: 700px;
+    margin-top: 2rem;
+    padding: 1.5rem;
+    box-sizing: border-box;
+    background: rgba(10, 25, 65, 0.4);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    text-align: center;
+    transition: opacity 0.5s ease-out;
+}
+
+#host-address-container p {
+    margin: 0 0 0.75rem 0;
+    font-size: 1rem;
+}
+
+#host-address-box {
+    background-color: var(--input-bg);
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    font-family: monospace;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    display: inline-block;
+    cursor: text;
+    user-select: all;
+    border: 1px solid var(--gradient-start);
+}
+
+.keyword-palette {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1.5rem; /* More space after the prompt box */
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.keyword-category h5 {
+    margin: 0 0 0.75rem 0;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.keyword-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.keyword-btn {
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    padding: 0.5rem 1rem;
+    border-radius: 16px; /* Pill shape */
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+}
+
+.keyword-btn:hover {
+    border-color: var(--gradient-start);
+    color: var(--text-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.keyword-btn:active {
+    transform: translateY(0);
+}
+
+/* --- CUSTOMIZABLE KEYWORD STYLES --- */
+.custom-keyword-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.remove-keyword-btn {
+    position: absolute;
+    top: -5px;
+    right: -2px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background-color: var(--gradient-mid);
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 10px;
+    font-weight: bold;
+    line-height: 16px;
+    text-align: center;
+    opacity: 0; 
+    transform: scale(0.5);
+    transition: all 0.2s ease-in-out;
+    z-index: 10;
+}
+
+.custom-keyword-wrapper:hover .remove-keyword-btn {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.keyword-btn.add-btn {
+    font-weight: bold;
+    font-size: 1.2rem;
+    padding: 0.25rem 1.25rem;
+    color: var(--gradient-start);
+}
+
+.keyword-btn.add-btn:hover {
+    color: white;
+    background-color: var(--gradient-start);
+}
+
+.keyword-btn.active {
+    background-color: var(--gradient-start);
+    color: white;
+    border-color: var(--gradient-mid);
+    box-shadow: 0 0 15px var(--accent-glow);
+}
+/* --- Modal Styles --- */
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(4px);
+    opacity: 1;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.modal-overlay.hidden {
+    opacity: 0;
+    pointer-events: none; /* Can't click on it when hidden */
+}
+
+.modal-content {
+    background: #282c34; /* Or your app's background color */
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 450px;
+    border: 1px solid #444;
+    transform: scale(1);
+    transition: transform 0.2s ease-in-out;
+}
+
+.modal-overlay.hidden .modal-content {
+    transform: scale(0.95);
+}
+
+.modal-content h4 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    font-size: 1.25rem;
+    color: #fff;
+}
+
+.modal-content p {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    color: #aaa;
+}
+
+#modal-keyword-input {
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: 6px;
+    border: 1px solid #555;
+    background-color: #1e2127;
+    color: #fff;
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+    box-sizing: border-box;
+}
+
+#modal-keyword-input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+}
+
+.modal-btn {
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.modal-btn.cancel {
+    background-color: #4a4f58;
+    color: #eee;
+}
+.modal-btn.cancel:hover {
+    background-color: #5a5f68;
+}
+
+.modal-btn.save {
+    background-color: #007bff;
+    color: white;
+}
+.modal-btn.save:hover {
+    background-color: #0056b3;
+}
+

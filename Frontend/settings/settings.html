@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kairo | Settings</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        body.two-column-settings .app-container {
+            grid-template-columns: 450px 1fr;
+            max-width: 1200px;
+        }
+        .settings-note {
+            background-color: rgba(36, 20, 70, 0.5);
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--gradient-start);
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            margin-top: 2rem;
+            color: var(--text-secondary);
+        }
+        .settings-note h5 {
+            margin: 0 0 0.5rem 0;
+            color: var(--text-primary);
+            font-size: 1.1rem;
+        }
+        .settings-note code {
+            background: var(--input-bg);
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+        }
+        .connection-error-box {
+            background-color: rgba(255, 78, 135, 0.1);
+            border: 1px solid var(--gradient-mid);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        .connection-error-box h5 {
+            color: var(--gradient-start);
+            margin: 0 0 0.5rem;
+        }
+        .connection-error-box p {
+            margin: 0;
+            color: var(--text-primary);
+        }
+        .connection-error-box code {
+             background: var(--input-bg);
+            padding: 3px 8px;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body class="three-column-layout two-column-settings">
+    <div class="app-container">
+        <!-- ==== COLUMN 1: CONTROLS ==== -->
+        <div class="controls-panel">
+            <header class="app-header">
+                <a href="../index.html" class="back-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="20" height="20">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+                    </svg>
+                </a>
+                <div class="header-content"><h1>Settings</h1></div>
+            </header>
+            
+            <div class="control-groups-wrapper">
+                
+                <!-- This section will ONLY be visible when running in the Electron Host app -->
+                <div id="host-info-box" class="control-group hidden">
+                    <h3><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.916 17.916 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-.778.099-1.533.284-2.253" /></svg></span>Host Info</h3>
+                    <p>Share the Kairo Host UI address with others on your network:</p>
+                    <input type="text" id="host-ui-display" readonly style="width: 93%; text-align: center;">
+                    <p style="margin-top:1rem;">The ComfyUI Backend API address is:</p>
+                    <input type="text" id="host-backend-display" readonly style="width: 93%; text-align: center;">
+                </div>
+
+                <div id="network-identity-box" class="control-group hidden">
+                    <h3><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.916 17.916 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-.778.099-1.533.284-2.253" /></svg></span>Network Identity</h3>
+                    <label for="hostname-input">Set a custom network name for this host:</label>
+                    <div class="input-with-suffix">
+                        <input type="text" id="hostname-input">
+                        <span>.local</span>
+                    </div>
+                    <button id="save-hostname-btn" class="action-button" style="margin-top: 1rem; width: 100%;">Save & Restart</button>
+                    <p class="input-note">The application will restart to apply the new name.</p>
+                </div>
+
+                <div class="control-group">
+                    <h3><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" /></svg></span>Active Model</h3>
+                    
+                    <div id="connection-error-box" class="connection-error-box hidden">
+                        <h5>Connection Failed</h5>
+                        <p>Could not load models from the host.</p>
+                        <p>Please ensure the host app is running.</p>
+                    </div>
+
+                    <div id="model-selection-group" class="stitch-direction-group hidden">
+                        <label for="model-select">Select the model to use for all generations:</label>
+                        <select id="model-select">
+                            <!-- Options will be populated by settings.js -->
+                        </select>
+                    </div>
+                     <p id="selection-status" style="margin-top: 1rem; color: var(--gradient-start); font-weight: 500;"></p>
+                </div>
+
+                <div class="settings-note">
+                    <h5>Important: Model Dependencies</h5>
+                    <p>For <strong>GGUF/Stable Diffusion</strong> models, you must also have the corresponding text-encoder file in the <code>ComfyUI/models/clip/</code> directory on the host.</p>
+                    <p>For example, if you select <code>flux1-...-Q4_K_M.gguf</code>, you MUST have <code>t5-v1_1-xxl-encoder-Q4_K_M.gguf</code> available.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==== COLUMN 2: INFO / HELP TEXT ==== -->
+        <div class="info-panel">
+             <div class="prompt-guide-content">
+                <h4>Host Configuration</h4>
+                <p>This page allows you to configure the core settings for your Kairo host application.</p>
+                
+                <h5>Network Identity</h5>
+                <p>Set a stable, human-readable network name for this host. This allows other devices on your network to connect using a memorable <code>.local</code> address, even if the host's IP address changes.</p>
+                <p>Your selection is saved and applied after the application restarts.</p>
+
+                <h5>Active Model</h5>
+                <p>Choose which AI model Kairo uses for its creative tasks. The dropdown menu lists all compatible models found on the host machine.</p>
+                <p>To add a new model, place its file in the appropriate ComfyUI models folder (e.g., <code>ComfyUI/models/unet/</code>) and restart the Kairo application.</p>
+            </div>
+        </div>
+    </div>
+    
+    <script src="../apiConfig.js"></script> 
+    <script src="settings.js" defer></script>
+</body>
+</html>

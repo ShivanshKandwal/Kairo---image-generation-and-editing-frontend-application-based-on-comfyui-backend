@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kairo | Image Generation</title>
+    <link rel="stylesheet" href="../style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    
+</head>
+<body class="three-column-layout">
+    <div class="app-container">
+        <!-- ==== COLUMN 1: CONTROLS ==== -->
+        <div class="controls-panel">
+            <header class="app-header">
+                <a href="../index.html" class="back-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="20" height="20"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" /></svg>
+                </a>
+                <div class="header-content"><h1>Image Generation</h1></div>
+            </header>
+            <div class="control-groups-wrapper">
+                <div class="control-group">
+                    <h3><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 0 0 1.5-.189m-1.5.189a6.01 6.01 0 0 1-1.5-.189m3.75 7.478a12.06 12.06 0 0 1-4.5 0m3.75 2.383a14.406 14.406 0 0 1-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 1 0-7.517 0c.85.493 1.509 1.333 1.509 2.316V18" />
+                    </svg></span>Prompt</h3>
+                    <div class="prompt-container">
+                        <textarea id="positive-prompt" placeholder="Describe the desired photo..."></textarea>
+                    </div>
+                    
+                    <!-- KEYWORD PALETTE -->
+                    <div class="keyword-palette">
+                        <div class="keyword-category">
+                            <h5>Style</h5>
+                            <div class="keyword-buttons">
+                                <button class="keyword-btn">photograph</button>
+                                <button class="keyword-btn">oil painting</button>
+                                <button class="keyword-btn">watercolor</button>
+                                <button class="keyword-btn">vector art</button>
+                                <button class="keyword-btn">line art</button>
+                                <button class="keyword-btn">cartoon</button>
+                            </div>
+                        </div>
+                        <div class="keyword-category">
+                            <h5>Details & Quality</h5>
+                            <div class="keyword-buttons">
+                                <button class="keyword-btn">4K</button>
+                                <button class="keyword-btn">ultra-detailed</button>
+                                <button class="keyword-btn">hyperrealistic</button>
+                                <button class="keyword-btn">vibrant colors</button>
+                                <button class="keyword-btn">sharp focus</button>
+                            </div>
+                        </div>
+                        <div class="keyword-category">
+                            <h5>Lighting</h5>
+                            <div class="keyword-buttons">
+                                <button class="keyword-btn">cinematic lighting</button>
+                                <button class="keyword-btn">soft light</button>
+                                <button class="keyword-btn">dramatic lighting</button>
+                                <button class="keyword-btn">god rays</button>
+                                <button class="keyword-btn">neon lighting</button>
+                            </div>
+                        </div>
+                        <!-- NEW CUSTOM KEYWORD SECTION -->
+                        <div class="keyword-category">
+                            <h5>My Keywords</h5>
+                            <div class="keyword-buttons" id="custom-keyword-buttons">
+                                <!-- Custom keywords will be dynamically added here -->
+                                <button id="add-keyword-btn" class="keyword-btn add-btn" title="Add a new custom keyword">+</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="control-group" id="generation-settings-group">
+                    <h3 class="collapsible-header">
+                        <span class="header-main-content">
+                            <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" />
+                            </svg></span>
+                            <span>Generation Settings</span>
+                        </span>
+                        <span class="chevron-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" width="20" height="20">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                            </svg>
+                        </span>
+                    </h3>
+                    <div class="collapsible-content">
+                        <div class="slider-group"><label for="steps">Steps</label><span class="slider-value" id="steps-value">20</span><div class="slider-container"><input type="range" id="steps" min="10" max="50" value="20" step="1"></div></div>
+                        <div class="slider-group"><label for="guidance">Guidance</label><span class="slider-value" id="guidance-value">2.5</span><div class="slider-container"><input type="range" id="guidance" min="1" max="10" value="2.5" step="0.1"></div></div>
+                        <div class="slider-group"><label for="width">Width</label><span class="slider-value" id="width-value">1024</span><div class="slider-container"><input type="range" id="width" min="512" max="1536" value="1024" step="64"></div></div>
+                        <div class="slider-group"><label for="height">Height</label><span class="slider-value" id="height-value">1024</span><div class="slider-container"><input type="range" id="height" min="512" max="1536" value="1024" step="64"></div></div>
+                        <div class="seed-container"><label for="seed">Seed</label><input type="text" id="seed" placeholder="Random"><button id="randomize-seed" title="Randomize Seed"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+                            </svg></span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+             <button id="generate-button">Generate</button>
+        </div>
+
+        <!-- ==== COLUMN 2: CANVAS ==== -->
+        <div class="canvas-panel">
+            <div id="image-wrapper">
+                <div class="placeholder-text">Your image will appear here</div>
+                <div id="loader" class="hidden"></div>
+                <img id="output-image" src="" alt="Generated image" class="hidden"/>
+            </div>
+            <div id="progress-container" class="hidden">
+                <div id="progress-bar-track">
+                    <div id="progress-bar-fill"></div>
+                </div>
+                <div class="progress-details">
+                    <span id="progress-steps">0 / 0</span>
+                    <span id="progress-percent">0%</span>
+                </div>
+            </div>
+            <div id="generation-details" class="hidden"></div>
+
+            <div id="queue-status-wrapper" class="hidden">
+                <div class="queue-info">
+                    <span id="queue-count">Queue: 0</span>
+                    <span id="executing-node"></span>
+                </div>
+                <button id="stop-button" class="action-button stop">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="20" height="20">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 7.5A2.25 2.25 0 0 1 7.5 5.25h9a2.25 2.25 0 0 1 2.25 2.25v9a2.25 2.25 0 0 1-2.25 2.25h-9a2.25 2.25 0 0 1-2.25-2.25v-9Z" />
+                    </svg>
+                    Stop
+                </button>
+            </div>
+
+            <div id="status">Ready to create magic! ✨</div>
+                <div class="action-bar hidden" id="action-bar">
+                <button class="action-button" id="save-button">
+                    <div class="icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg></div>
+                    Save Image
+                </button>
+            </div>
+        </div>
+
+        <!-- ==== COLUMN 3: PROMPTING GUIDE ==== -->
+        <div class="info-panel">
+            <div class="prompt-guide-content">
+                <h4>Text-to-Image Prompting Guide</h4>
+                <p>Combine keywords to create your perfect image. The more specific, the better.</p>
+                <h4>A Good Prompt Includes:</h4>
+                <ul>
+                    <li><strong>Subject:</strong> "A beautiful princess, a rusty robot"</li>
+                    <li><strong>Style:</strong> "3D render, oil painting, photo"</li>
+                    <li><strong>Setting:</strong> "In a magical forest, on Mars"</li>
+                    <li><strong>Lighting:</strong> "Cinematic lighting, soft morning light"</li>
+                    <li><strong>Details:</strong> "Ultra-detailed, 4K, vibrant colors"</li>
+                </ul>
+                <h4>Example Structure:</h4>
+                <p><code>(Style) of a (Subject) in a (Setting) with (Details)</code></p>
+                <p><strong>Example:</strong></p>
+                <code>A photo of a happy dog wearing sunglasses on a beach, cinematic lighting, ultra-detailed.</code>
+                <br><br>
+                <h4>Pro Tips:</h4>
+                <ul>
+                    <li>Try adding artist names like "in the style of Van Gogh".</li>
+                    <li>Be specific! "A red sports car" is much better than "a car".</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <script src="image-generation.js" defer></script>
+    <div id="add-keyword-modal" class="modal-overlay hidden">
+    <div class="modal-content">
+        <h4>Add a New Custom Keyword</h4>
+        <p>Enter the keyword or phrase you want to save.</p>
+        <input type="text" id="modal-keyword-input" placeholder="e.g., in the style of monet">
+        <div class="modal-actions">
+            <button id="modal-cancel-btn" class="modal-btn cancel">Cancel</button>
+            <button id="modal-save-btn" class="modal-btn save">Save Keyword</button>
+        </div>
+    </div>
+</div>
+</body>
+</html>

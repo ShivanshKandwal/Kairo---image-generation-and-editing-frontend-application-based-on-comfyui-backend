@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kairo | Combine Images</title>
+    <link rel="stylesheet" href="../style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* This class makes the input functionally present but visually hidden */
+        .visually-hidden-input {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+
+        }
+        /* --- Main panel layout to position Generate button correctly --- */
+        .controls-panel {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- Collapsible Settings Section --- */
+        .control-group h3.collapsible-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+            border-radius: 6px;
+            transition: background-color 0.2s ease;
+            margin-bottom: 0; 
+            padding-bottom: 0.75rem; /* Re-add padding that was on h3 */
+            border-bottom: 1px solid var(--border-color); /* Re-add border */
+        }
+
+        .control-group h3.collapsible-header:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .collapsible-header .header-main-content {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .collapsible-header .chevron-icon {
+            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0.25, 1, 0.5, 1),
+                        padding-top 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+        }
+
+        /* State when expanded */
+        .control-group.expanded .collapsible-header {
+             border-bottom-color: transparent;
+        }
+
+        .control-group.expanded .chevron-icon {
+            transform: rotate(180deg);
+        }
+
+        .control-group.expanded .collapsible-content {
+            max-height: 500px; 
+            padding-top: 1.5rem;
+        }
+
+        /* -- Staggered Animation for children -- */
+        .collapsible-content > * {
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+        }
+        .control-group.expanded .collapsible-content > * {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .control-group.expanded .collapsible-content > *:nth-child(1) { transition-delay: 0.05s; }
+        .control-group.expanded .collapsible-content > *:nth-child(2) { transition-delay: 0.1s; }
+        .control-group.expanded .collapsible-content > *:nth-child(3) { transition-delay: 0.15s; }
+        .control-group.expanded .collapsible-content > *:nth-child(4) { transition-delay: 0.2s; }
+        .control-group.expanded .collapsible-content > *:nth-child(5) { transition-delay: 0.25s; }
+    </style>
+</head>
+<body class="three-column-layout">
+    <div class="app-container">
+        <!-- ==== COLUMN 1: CONTROLS ==== -->
+        <div class="controls-panel">
+            <header class="app-header">
+                <a href="../index.html" class="back-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="20" height="20"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" /></svg>
+                </a>
+                <div class="header-content"><h1>Combine Images</h1></div>
+            </header>
+            
+            <div class="control-groups-wrapper">
+                <div class="control-group">
+                    <h3><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Z" /></svg></span>1. Input Images</h3>
+                    <div class="upload-container">
+                        <label for="image-one-input" class="upload-area">
+                            <div id="image-one-prompt" class="upload-content">
+                                 <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l-3.75 3.75M12 9.75l3.75 3.75M12 19.5A7.5 7.5 0 1 0 12 4.5a7.5 7.5 0 0 0 0 15Z" /></svg></span>
+                                <div><strong>Image 1</strong><br>Click to upload</div>
+                            </div>
+                            <img id="image-one-preview" src="#" alt="Image 1 Preview" class="hidden preview"/>
+                        </label>
+                        <input type="file" id="image-one-input" accept="image/*" class="visually-hidden-input">
+
+                        <label for="image-two-input" class="upload-area">
+                            <div id="image-two-prompt" class="upload-content">
+                                <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l-3.75 3.75M12 9.75l3.75 3.75M12 19.5A7.5 7.5 0 1 0 12 4.5a7.5 7.5 0 0 0 0 15Z" /></svg></span>
+                                <div><strong>Image 2</strong><br>Click to upload</div>
+                            </div>
+                             <img id="image-two-preview" src="#" alt="Image 2 Preview" class="hidden preview"/>
+                        </label>
+                        <input type="file" id="image-two-input" accept="image/*" class="visually-hidden-input">
+                    </div>
+                     <div class="stitch-direction-group">
+                        <label for="stitch-direction">Combine Direction</label>
+                        <select id="stitch-direction">
+                            <option value="right" selected>Image 2 to the Right</option>
+                            <option value="left">Image 2 to the Left</option>
+                            <option value="bottom">Image 2 at the Bottom</option>
+                            <option value="top">Image 2 at the Top</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <h3><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 0 0 1.5-.189m-1.5.189a6.01 6.01 0 0 1-1.5-.189m3.75 7.478a12.06 12.06 0 0 1-4.5 0m3.75 2.383a14.406 14.406 0 0 1-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 1 0-7.517 0c.85.493 1.509 1.333 1.509 2.316V18" /></svg></span>2. Describe Final Scene</h3>
+                    <div class="prompt-container">
+                        <textarea id="positive-prompt" placeholder="Describe the final combined scene..."></textarea>
+                    </div>
+                </div>
+                <div class="control-group" id="adjust-settings-group">
+                    <h3 class="collapsible-header">
+                        <span class="header-main-content">
+                            <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" /></svg></span>
+                            <span>3. Adjust Settings</span>
+                        </span>
+                        <span class="chevron-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" width="20" height="20"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" /></svg>
+                        </span>
+                    </h3>
+                    <div class="collapsible-content">
+                        <div class="slider-group"><label for="guidance">Guidance</label><span class="slider-value" id="guidance-value">2.5</span><div class="slider-container"><input type="range" id="guidance" min="1" max="10" value="2.5" step="0.1"></div></div>
+                        <div class="slider-group"><label for="denoise">Denoise Strength</label><span class="slider-value" id="denoise-value">1.00</span><div class="slider-container"><input type="range" id="denoise" min="0.1" max="1.0" value="1.0" step="0.01"></div></div>
+                        <div class="slider-group"><label for="steps">Steps</label><span class="slider-value" id="steps-value">20</span><div class="slider-container"><input type="range" id="steps" min="10" max="50" value="20" step="1"></div></div>
+                        <div class="seed-container">
+                            <label for="seed">Seed</label><input type="text" id="seed" placeholder="Random">
+                            <button id="randomize-seed" title="Randomize Seed">
+                                <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" /></svg></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button id="generate-button">Generate</button>
+        </div>
+
+        <!-- ==== COLUMN 2: CANVAS ==== -->
+        <div class="canvas-panel">
+            <div id="image-wrapper">
+                <div class="placeholder-text">Your combined image will appear here</div>
+                <div id="loader" class="hidden"></div>
+                <img id="output-image" src="" alt="Generated image" class="hidden"/>
+            </div>
+            <div id="progress-container" class="hidden">
+                <div id="progress-bar-track"><div id="progress-bar-fill"></div></div>
+                <div class="progress-details">
+                    <span id="progress-steps">0 / 0</span>
+                    <span id="progress-percent">0%</span>
+                </div>
+            </div>
+            <div id="generation-details" class="hidden"></div>
+            <div id="queue-status-wrapper" class="hidden">
+                <div class="queue-info">
+                    <span id="queue-count">Queue: 0</span>
+                    <span id="executing-node"></span>
+                </div>
+                <button id="stop-button" class="action-button stop">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="20" height="20"><path stroke-linecap="round" stroke-linejoin="round" d="M5.25 7.5A2.25 2.25 0 0 1 7.5 5.25h9a2.25 2.25 0 0 1 2.25 2.25v9a2.25 2.25 0 0 1-2.25 2.25h-9a2.25 2.25 0 0 1-2.25-2.25v-9Z" /></svg>
+                    Stop
+                </button>
+            </div>
+            <div id="status">Upload two images to begin! 🖼️+🖼️</div>
+            <div class="action-bar hidden" id="action-bar">
+                <a href="#" class="action-button" id="save-button" download>
+                    <div class="icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg></div>
+                    Save Image
+                </a>
+            </div>
+        </div>
+
+        <!-- ==== COLUMN 3: PROMPTING GUIDE ==== -->
+        <div class="info-panel">
+            <div class="prompt-guide-content">
+                <h4>Prompting Guide: Combine Images</h4>
+                <p>Your prompt's job is to describe the final, unified scene. Think of it as the "story" that tells the AI how to blend your two images.</p>
+                
+                <h4>A Good Prompt Connects:</h4>
+                <ul>
+                    <li><strong>The Subjects:</strong> Clearly state what the subjects from Image 1 and Image 2 are now doing together. <em>"The woman is holding the bunny."</em></li>
+                    <li><strong>What to Keep:</strong> Explicitly tell the AI to preserve key features. <em>"Keep the woman's exact facial features."</em></li>
+                    <li><strong>The New Scene:</strong> Describe the final background and artistic style. <em>"In a sunny park, photorealistic style."</em></li>
+                </ul>
+
+                <h4>Example Structure:</h4>
+                <p><code>(Action between subjects) while (preserving features) in a (new setting).</code></p>
+                <p><strong>Example:</strong></p>
+                <code>Place the woman from Image 1 and the dog from Image 2 on a beach, preserving the woman's exact face. Photorealistic, soft morning light.</code>
+                <br><br>
+
+                <h4>Pro Tips:</h4>
+                <ul>
+                    <li>Be specific! Instead of "the person," say "the man in the red jacket from Image 1."</li>
+                    <li>Mention both subjects in the prompt to ensure neither is ignored.</li>
+                    <li>If the style is wrong, add keywords like "oil painting" or "cinematic photo".</li>
+                </ul>
+                <p><strong>Example:</strong></p>
+                <code>Place the woman from Image 1 and the dog from Image 2 on a beach, preserving the woman's exact face. Photorealistic, soft morning light.</code>
+            </div>
+        </div>
+    </div>
+    <script src="combine-images.js" defer></script>
+</body>
+</html>

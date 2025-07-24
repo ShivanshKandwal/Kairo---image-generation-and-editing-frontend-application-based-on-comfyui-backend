@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kairo | Style Transform</title>
+    <link rel="stylesheet" href="../style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* This class makes the input functionally present but visually hidden */
+        .visually-hidden-input {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+    </style>
+</head>
+<body class="three-column-layout">
+    <div class="app-container">
+        <!-- ==== COLUMN 1: CONTROLS ==== -->
+        <div class="controls-panel">
+            <header class="app-header">
+                <a href="../index.html" class="back-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="20" height="20"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" /></svg>
+                </a>
+                <div class="header-content">
+                    <h1>Style Transform</h1>
+                </div>
+            </header>
+            
+            <div class="control-groups-wrapper">
+                <div class="control-group">
+                    <h3><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Z" /></svg></span>1. Upload Style Image</h3>
+                    <label for="image-upload" class="upload-area">
+                        <div id="upload-prompt" class="upload-content">
+                            <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" /></svg></span>
+                            <div>Click to upload style reference</div>
+                        </div>
+                        <img id="image-preview" src="#" alt="Image Preview" class="hidden preview"/>
+                    </label>
+                    <input type="file" id="image-upload" accept="image/png, image/jpeg, image/webp" class="visually-hidden-input">
+                </div>
+
+                <div class="control-group">
+                    <h3><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 0 0 1.5-.189m-1.5.189a6.01 6.01 0 0 1-1.5-.189m3.75 7.478a12.06 12.06 0 0 1-4.5 0m3.75 2.383a14.406 14.406 0 0 1-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 1 0-7.517 0c.85.493 1.509 1.333 1.509 2.316V18" /></svg></span>2. Describe New Image</h3>
+                    <div class="prompt-container">
+                        <textarea id="positive-prompt" placeholder="e.g., A portrait of a queen..."></textarea>
+                    </div>
+                </div>
+
+                <div class="control-group" id="adjust-settings-group">
+                    <h3 class="collapsible-header">
+                        <span class="header-main-content">
+                            <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" /></svg></span>
+                            <span>3. Adjust Settings</span>
+                        </span>
+                        <span class="chevron-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" width="20" height="20">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                            </svg>
+                        </span>
+                    </h3>
+                    <div class="collapsible-content">
+                        <div class="slider-group"><label for="width">Width</label><span class="slider-value" id="width-value">1024</span><div class="slider-container"><input type="range" id="width" min="512" max="2048" value="1024" step="64"></div></div>
+                        <div class="slider-group"><label for="height">Height</label><span class="slider-value" id="height-value">1024</span><div class="slider-container"><input type="range" id="height" min="512" max="2048" value="1024" step="64"></div></div>
+                        <div class="slider-group"><label for="steps">Steps</label><span class="slider-value" id="steps-value">20</span><div class="slider-container"><input type="range" id="steps" min="10" max="50" value="20" step="1"></div></div>
+                        <div class="seed-container">
+                            <label for="seed">Seed</label><input type="text" id="seed" placeholder="Random">
+                            <button id="randomize-seed" title="Randomize Seed">
+                                <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" /></svg></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button id="generate-button">Generate</button>
+        </div>
+
+        <!-- ==== COLUMN 2: CANVAS ==== -->
+        <div class="canvas-panel">
+            <div id="image-wrapper">
+                <div class="placeholder-text">Your new image will appear here</div>
+                <div id="loader" class="hidden"></div>
+                <img id="output-image" src="" alt="Generated image" class="hidden"/>
+            </div>
+
+            <div id="progress-container" class="hidden">
+                <div id="progress-bar-track"><div id="progress-bar-fill"></div></div>
+                <div class="progress-details">
+                    <span id="progress-steps">0 / 0</span>
+                    <span id="progress-percent">0%</span>
+                </div>
+            </div>
+
+            <div id="generation-details" class="hidden"></div>
+            
+            <div id="queue-status-wrapper" class="hidden">
+                <div class="queue-info">
+                    <span id="queue-count">Queue: 0</span>
+                    <span id="executing-node"></span>
+                </div>
+                <button id="stop-button" class="action-button stop">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="20" height="20"><path stroke-linecap="round" stroke-linejoin="round" d="M5.25 7.5A2.25 2.25 0 0 1 7.5 5.25h9a2.25 2.25 0 0 1 2.25 2.25v9a2.25 2.25 0 0 1-2.25 2.25h-9a2.25 2.25 0 0 1-2.25-2.25v-9Z" /></svg>
+                    Stop
+                </button>
+            </div>
+
+            <div id="status">Upload a style image to begin! ✨</div>
+
+            <div class="action-bar hidden" id="action-bar">
+                <a href="#" class="action-button" id="save-button" download>
+                    <div class="icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg></div>
+                    Save Image
+                </a>
+            </div>
+        </div>
+        
+        <!-- ==== COLUMN 3: PROMPTING GUIDE ==== -->
+        <div class="info-panel">
+            <div class="prompt-guide-content">
+                <h4>Prompting Guide: Style Transform</h4>
+                <p>This tool uses your uploaded image as a <strong>style reference</strong> to create a brand new image based on your prompt.</p>
+                <ol>
+                    <li><strong>Upload an image:</strong> This image defines the artistic style (e.g., watercolor, 3D render, cartoon).</li>
+                    <li><strong>Write a prompt:</strong> Describe the <strong>new content</strong> you want to create (e.g., "a futuristic car," "a queen on a throne").</li>
+                </ol>
+                <p>The AI will combine the style from your image with the content from your prompt.</p>
+                <p><strong>Example:</strong></p>
+                <code>Using this art style, create an image of a majestic lion wearing a crown.</code>
+                <p><strong>Pro Tips:</strong></p>
+                <ul>
+                    <li>A clear, well-defined style in your uploaded image will produce better results.</li>
+                    <li>Be descriptive about the new content.</li>
+                    <li>Adjust the Width and Height sliders to match the desired shape of your *new* image.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <script src="style-transform.js" defer></script>
+</body>
+</html>

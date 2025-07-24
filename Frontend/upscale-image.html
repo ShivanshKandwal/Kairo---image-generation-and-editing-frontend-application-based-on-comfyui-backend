@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FluxGen | Upscale Image</title>
+    <!-- Corrected path to parent directory's style.css -->
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="three-column-layout">
+    <div class="app-container">
+        <!-- ==== COLUMN 1: CONTROLS ==== -->
+        <div class="controls-panel">
+            <header class="app-header">
+                <!-- Corrected path to parent directory's index.html -->
+                <a href="index.html" class="back-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="20" height="20">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+                    </svg>
+                </a>
+                <div class="header-content">
+                    <h1>Upscale Image</h1>
+                </div>
+            </header>
+
+            <div class="control-groups-wrapper">
+                <div class="control-group">
+                    <h3><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Z" /></svg></span>1. Upload Image</h3>
+                                          <div id="upload-area" class="upload-area">
+                        <div id="upload-prompt" class="upload-content">
+                            <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" /></svg></span>
+                            <div>Click to upload image to upscale</div>
+                        </div>
+                        <img id="image-preview" src="#" alt="Image Preview" class="hidden preview"/>
+                    </div>
+                    <input type="file" id="image-upload" accept="image/png, image/jpeg, image/webp" style="display: none;">
+                </div>
+
+                <div class="control-group">
+                    <h3><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" /></svg></span>2. Settings</h3>
+                    <div class="transform-type-group">
+                        <label for="upscale-factor">Upscale Factor</label>
+                        <select id="upscale-factor">
+                            <option value="2x">2x Upscale</option>
+                            <option value="4x" selected>4x Upscale</option>
+                            <option value="8x">8x Upscale</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <button id="generate-button" style="margin-top: auto;">Upscale</button>
+        </div>
+
+        <!-- ==== COLUMN 2: CANVAS ==== -->
+        <div class="canvas-panel">
+            <div id="image-wrapper">
+                <div class="placeholder-text">Your upscaled image will appear here</div>
+                <div id="loader" class="hidden"></div>
+                <img id="output-image" src="" alt="Generated image" class="hidden"/>
+            </div>
+            <div id="progress-container" class="hidden">
+                <div id="progress-bar-track">
+                    <div id="progress-bar-fill"></div>
+                </div>
+                <div class="progress-details">
+                    <span id="progress-steps">...</span>
+                    <span id="progress-percent"></span>
+                </div>
+            </div>
+            <div id="generation-details" class="hidden"></div>
+            <div id="status">Ready to upscale! ✨</div>
+            <div class="action-bar hidden" id="action-bar">
+                <a href="#" class="action-button" id="save-button" download>
+                    <div class="icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg></div>
+                    Save Image
+                </a>
+            </div>
+        </div>
+        
+        <!-- ==== COLUMN 3: PROMPTING GUIDE ==== -->
+        <div class="info-panel">
+            <div class="prompt-guide-content">
+                <h4>Upscale Image Guide</h4>
+                <p>This tool increases the resolution and detail of an image using a dedicated AI upscaler model. It intelligently adds pixels rather than just stretching the image.</p>
+                
+                <h4>How to Use</h4>
+                <ol>
+                    <li><strong>Upload an Image:</strong> Select any image you want to make larger and sharper.</li>
+                    <li><strong>Choose an Upscale Factor:</strong> Select how much you want to enlarge the image (2x, 4x, or 8x).</li>
+                    <li><strong>Click "Upscale":</strong> The process will begin.</li>
+                </ol>
+                
+                <h4>About the Models</h4>
+                <p>You can configure which model file is used for each upscale factor in the <code>upscale-image.js</code> file.</p>
+                <ul>
+                    <li><strong>2x Upscale:</strong> Good for minor resolution boosts.</li>
+                    <li><strong>4x Upscale:</strong> The standard for high-quality enhancement.</li>
+                    <li><strong>8x Upscale:</strong> Provides the largest increase, ideal for very small source images.</li>
+                </ul>
+                <br>
+                <p><i>Note: This simple version does not preserve transparency. To upscale transparent images, a more complex workflow is required.</i></p>
+            </div>
+        </div>
+    </div>
+    <script src="upscale-image.js" defer></script>
+</body>
+</html>

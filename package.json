@@ -1,0 +1,57 @@
+{
+  "name": "kairo",
+  "version": "1.0.0",
+  "description": "Kairo — Your creative AI lab powered by ComfyUI",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "build": {
+    "appId": "com.kairo.app",
+    "productName": "Kairo Host",
+    "asar": true,
+    "asarUnpack": [
+      "**/Frontend/**"
+    ],
+    "files": [
+      "main.js",
+      "preload.js",
+      "package.json",
+      "Frontend/**/*"
+    ],
+    "directories": {
+      "output": "dist"
+    },
+    "compression": "normal",
+    "win": {
+      "target": "zip",
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
+      "installerHeaderIcon": "build/icon.ico",
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Kairo"
+    }
+  },
+  "author": "Shivansh Kandwal",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^29.0.0",
+    "electron-builder": "^24.11.0"
+  },
+  "dependencies": {
+    "axios": "^1.6.8",
+    "bonjour-service": "^1.1.1",
+    "electron-store": "^10.1.0",
+    "express": "^4.19.2",
+    "http-proxy-middleware": "^3.0.0"
+  }
+}

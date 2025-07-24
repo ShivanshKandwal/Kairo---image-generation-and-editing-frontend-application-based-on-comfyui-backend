@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kairo | Background Remover</title>
+    <link rel="stylesheet" href="../style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* This class makes the input functionally present but visually hidden */
+        .visually-hidden-input {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+    </style>
+</head>
+<body class="three-column-layout">
+    <div class="app-container">
+        <!-- ==== COLUMN 1: CONTROLS ==== -->
+        <div class="controls-panel">
+            <header class="app-header">
+                <a href="../index.html" class="back-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="20" height="20"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" /></svg>
+                </a>
+                <div class="header-content">
+                    <h1>Background Remover</h1>
+                </div>
+            </header>
+
+            <div class="control-groups-wrapper">
+                <div class="control-group">
+                    <h3><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Z" /></svg></span>1. Upload Image</h3>
+                     
+                     <!-- ===== CRITICAL CHANGE: Changed <label> to <div> and added an id ===== -->
+                     <div class="upload-area" id="upload-area" style="cursor: pointer;">
+                        <div id="upload-prompt" class="upload-content">
+                            <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" /></svg></span>
+                            <div>Click to upload an image</div>
+                        </div>
+                        <img id="image-preview" src="#" alt="Image Preview" class="hidden preview"/>
+                    </div>
+                    <!-- The input is now separate and visually hidden via CSS -->
+                    <input type="file" id="image-upload" accept="image/png, image/jpeg, image/webp" class="visually-hidden-input">
+                </div>
+                 <div class="control-group">
+                    <h3><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" /></svg></span>2. Settings</h3>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem;">This tool uses a dedicated node in ComfyUI to remove the background. No extra settings are needed.</p>
+                </div>
+            </div>
+           
+            <button id="generate-button">Remove Background</button>
+        </div>
+
+        <!-- ==== COLUMN 2: CANVAS ==== -->
+        <div class="canvas-panel">
+            <div id="image-wrapper">
+                <div class="placeholder-text">Your result will appear here</div>
+                <div id="loader" class="hidden"></div>
+                <img id="output-image" src="" alt="Result image" class="hidden"/>
+            </div>
+
+            <!-- Added progress container for consistency -->
+            <div id="progress-container" class="hidden">
+                <div id="progress-bar-track">
+                    <div id="progress-bar-fill"></div>
+                </div>
+                <div class="progress-details">
+                    <span id="progress-steps">...</span>
+                    <span id="progress-percent"></span>
+                </div>
+            </div>
+
+            <div id="generation-details" class="hidden"></div>
+           
+            <div id="status">Ready to remove backgrounds! ✨</div>
+           
+            <div class="action-bar hidden" id="action-bar">
+                <a href="#" class="action-button" id="save-button" download="bg-removed-image.png">
+                    <div class="icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg></div>
+                    Save Image
+                </a>
+            </div>
+        </div>
+       
+        <!-- ==== COLUMN 3: PROMPTING GUIDE ==== -->
+        <div class="info-panel">
+            <div class="prompt-guide-content">
+                <h4>Guide: Background Remover</h4>
+                <p>This tool is designed for one simple task: to cleanly remove the background from an image, leaving you with a transparent subject.</p>
+                <h4>How to Use</h4>
+                <ol>
+                    <li><strong>Upload an Image:</strong> Click the upload area and select an image. For best results, use an image with a clear subject.</li>
+                    <li><strong>Click "Remove Background":</strong> The AI will process the image and identify the foreground subject.</li>
+                    <li><strong>Save the Result:</strong> Once the result appears, click "Save Image" to save it to your ComfyUI output folder.</li>
+                </ol>
+                <h4>Pro Tips</h4>
+                <ul>
+                    <li>This tool now runs directly inside ComfyUI using the BEN2 custom node.</li>
+                    <li>Images with high contrast between the subject and background work best.</li>
+                    <li>The output is always a PNG to support transparency.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <script src="bg-remover.js" defer></script>
+</body>
+</html>
