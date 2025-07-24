@@ -187,19 +187,24 @@
             </main>
             
             <section class="about-section">
-                <h2>About This Project</h2>
+                <h2>Project Architecture & Technology Stack</h2>
                 <div class="about-content">
                     <div class="about-column">
-                        <h3>The Vision</h3>
-                        <p>This studio was created to provide a fast, intuitive, and powerful suite of AI-powered creative tools. By building a clean user interface on top of a robust backend, the goal is to make advanced image generation and manipulation accessible to everyone, from artists to hobbyists.</p>
+                        <h3>Technical Summary</h3>
+                        <ul class="tech-list">
+                            <li><strong>Decoupled Architecture:</strong> A robust Node.js backend, powered by Express.js, serves a dynamic vanilla JavaScript frontend, ensuring a modular and maintainable codebase.</li>
+                            <li><strong>Cross-Platform Desktop Application:</strong> Packaged with Electron.js to create a seamless, native-like experience on Windows, macOS, and Linux.</li>
+                            <li><strong>Real-time AI Integration:</strong> Interfaces directly with the ComfyUI Python backend via a proxy, managing AI model loading and job execution through websockets for live progress updates.</li>
+                        </ul>
                     </div>
                     <div class="about-column">
-                        <h3>Core Technologies</h3>
+                        <h3>Core Technologies & Expertise</h3>
                         <ul class="tech-list">
-                            <li><strong>Frontend:</strong> Vanilla HTML, CSS, & JavaScript</li>
-                            <li><strong>Backend API:</strong> ComfyUI</li>
-                            <li><strong>AI Model:</strong> FLUX.1 (via GGUF Models), BEN2(BG-Removal) & Upscale Models</li>
-                            <li><strong>Real-time UI:</strong> Websockets for Live Progress</li>
+                            <li><strong>Desktop App Framework:</strong> Electron.js</li>
+                            <li><strong>Backend Runtime:</strong> Node.js with Express.js</li>
+                            <li><strong>Frontend:</strong> Vanilla HTML5, CSS3, & ES6+ JavaScript</li>
+                            <li><strong>AI Backend:</strong> ComfyUI (Python-based)</li>
+                            <li><strong>Networking:</strong> Websockets, mDNS (Bonjour)</li>
                         </ul>
                     </div>
                 </div>

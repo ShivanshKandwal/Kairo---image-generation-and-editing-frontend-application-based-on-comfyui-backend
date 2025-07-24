@@ -6,6 +6,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const modelSelect = document.getElementById('model-select');
     const statusMessage = document.getElementById('selection-status');
     const modelSelectionGroup = document.getElementById('model-selection-group');
+    const defaultModelBox = document.getElementById('default-model-box');
+    const defaultModelSelect = document.getElementById('default-model-select');
+    const defaultModelStatus = document.getElementById('default-model-status');
     
     // Host/Client specific elements
     const hostInfoBox = document.getElementById('host-info-box');
@@ -18,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const isElectron = typeof window.comfyAPI !== 'undefined';
 
     // --- Helper function to populate the model dropdown ---
-    const populateModelList = (models) => {
+    const populateModelList = (models, defaultModel) => {
         modelSelectionGroup.classList.remove('hidden');
         errorBox.classList.add('hidden');
         modelSelect.innerHTML = '';
@@ -45,6 +48,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const savedModel = localStorage.getItem('kairo-active-model');
         if (savedModel && models.includes(savedModel)) {
             modelSelect.value = savedModel;
+        } else if (defaultModel && models.includes(defaultModel)) {
+            modelSelect.value = defaultModel;
+            localStorage.setItem('kairo-active-model', defaultModel);
         } else if (models.length > 0) {
             // Default to the first model if nothing is saved
             modelSelect.value = models[0];
@@ -90,8 +96,42 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Get the list of models directly
         window.comfyAPI.getAvailableModels()
-            .then(populateModelList)
+            .then(models => {
+                populateModelList(models);
+                populateDefaultModelList(models); // New function call
+            })
             .catch(handleConnectionError);
+
+        // --- Logic for the new Default Model box ---
+        defaultModelBox.classList.remove('hidden');
+
+        const populateDefaultModelList = (models) => {
+            defaultModelSelect.innerHTML = '<option value="">-- None (Guests must choose) --</option>'; // Add a none option
+            models.forEach(modelPath => {
+                const option = document.createElement('option');
+                option.value = modelPath;
+                const displayName = modelPath.includes('/') ? modelPath.split('/').pop() : modelPath;
+                let type = 'SD'; // Default type
+                if (modelPath.toLowerCase().endsWith('.gguf')) type = 'GGUF';
+                if (modelPath.includes('diffusion_models/')) type = 'FP8';
+                option.textContent = `${displayName} [${type}]`;
+                defaultModelSelect.appendChild(option);
+            });
+
+            // Get the saved default model and set it
+            window.comfyAPI.getDefaultModel().then(savedDefault => {
+                if (savedDefault) {
+                    defaultModelSelect.value = savedDefault;
+                }
+            });
+        };
+
+        defaultModelSelect.addEventListener('change', async () => {
+            const selectedDefault = defaultModelSelect.value;
+            await window.comfyAPI.setDefaultModel(selectedDefault);
+            defaultModelStatus.textContent = 'Default model saved!';
+            setTimeout(() => { defaultModelStatus.textContent = ''; }, 3000);
+        });
 
     } else {
         // --- CLIENT / BROWSER MODE ---
@@ -129,9 +169,19 @@ document.addEventListener('DOMContentLoaded', () => {
             return models;
         };
 
-        // Call the fetch function
-        fetchPrimaryModelsFromServer()
-            .then(populateModelList)
+        const fetchHostInfo = async () => {
+            const response = await fetch('/host-info');
+            if (!response.ok) {
+                throw new Error(`Server connection failed: ${response.status}`);
+            }
+            return await response.json();
+        };
+
+        // Call the fetch functions in parallel
+        Promise.all([fetchPrimaryModelsFromServer(), fetchHostInfo()])
+            .then(([models, hostInfo]) => {
+                populateModelList(models, hostInfo.defaultModel);
+            })
             .catch(handleConnectionError);
     }
 

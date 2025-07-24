@@ -19,5 +19,7 @@ contextBridge.exposeInMainWorld('comfyAPI', {
     getHostIp: () => ipcRenderer.invoke('get-host-ip'),
     getHostname: () => ipcRenderer.invoke('get-hostname'),
     setHostname: (hostname) => ipcRenderer.invoke('set-hostname', hostname),
-    selectComfyUIPath: () => ipcRenderer.invoke('select-comfyui-path')
+    selectComfyUIPath: () => ipcRenderer.invoke('select-comfyui-path'),
+    getDefaultModel: () => ipcRenderer.invoke('get-default-model'),
+    setDefaultModel: (modelName) => ipcRenderer.invoke('set-default-model', modelName)
 });

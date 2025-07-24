@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kairo | Setup</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .setup-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 80vh;
+            padding: 4rem 2rem;
+            max-width: 800px;
+            margin: 5vh auto;
+            gap: 2rem;
+            text-align: center;
+            background: rgba(26, 11, 58, 0.4);
+            border-radius: 24px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            backdrop-filter: blur(12.5px);
+            -webkit-backdrop-filter: blur(12.5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="setup-container">
+        <h1>Welcome to Kairo</h1>
+        <p>To get started, please select your ComfyUI directory.</p>
+        <p>This is the main folder that contains the `run_nvidia_gpu.bat` file and the `ComfyUI` subdirectory.</p>
+        <button id="select-folder-btn" class="action-button">Select ComfyUI Folder</button>
+    </div>
+    <script>
+        document.getElementById('select-folder-btn').addEventListener('click', async () => {
+            if (window.comfyAPI) {
+                const result = await window.comfyAPI.selectComfyUIPath();
+                if (result.success) {
+                    // The main process will restart the app automatically.
+                }
+            }
+        });
+    </script>
+</body>
+</html>

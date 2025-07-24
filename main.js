@@ -84,6 +84,15 @@ function startFrontendServer() {
         ws: true,
       })
     );
+    expressApp.get("/host-info", (req, res) => {
+        res.json({
+            ip: getLocalIpAddress(),
+            frontendPort: FRONTEND_PORT,
+            backendPort: BACKEND_PORT,
+            stableUrl: `http://${store.get('customHostname', 'kairo')}.local:${FRONTEND_PORT}`,
+            defaultModel: store.get('defaultModel', null)
+        });
+    });
     expressApp.get("*", (req, res) => {
       const indexPath = path.join(FRONTEND_PATH, "index.html");
       if (fs.existsSync(indexPath)) res.sendFile(indexPath);
@@ -103,12 +112,12 @@ function startFrontendServer() {
   });
 }
 
-function createWindow() {
+function createWindow(isSetupMode = false) {
   mainWindow = new BrowserWindow({
-    width: 1400,
-    height: 900,
-    minWidth: 1280,
-    minHeight: 800,
+    width: isSetupMode ? 800 : 1400,
+    height: isSetupMode ? 600 : 900,
+    minWidth: isSetupMode ? 800 : 1280,
+    minHeight: isSetupMode ? 600 : 800,
     title: `Kairo Host`,
     show: false,
     webPreferences: {
@@ -122,10 +131,14 @@ function createWindow() {
     mainWindow.webContents.openDevTools();
   }
   mainWindow.setMenu(null);
-  mainWindow.loadFile(path.join(FRONTEND_PATH, "index.html"));
+  const pageToLoad = isSetupMode ? "setup.html" : "index.html";
+  mainWindow.loadFile(path.join(FRONTEND_PATH, pageToLoad));
   mainWindow.on("ready-to-show", async () => {
-    await initializeIpAddressFile();
-    startIpAddressUpdater();
+    if (!isSetupMode) {
+        await initializeIpAddressFile();
+        startIpAddressUpdater();
+    }
+    mainWindow.show();
   });
 }
 
@@ -234,9 +247,7 @@ app.on("ready", async () => {
 
   if (!COMFYUI_PATH || !fs.existsSync(COMFYUI_PATH)) {
     // If path is not set or invalid, go into setup mode.
-    createWindow(); // Create window without starting backend
-    mainWindow.show();
-    // The frontend will handle the UI for setup.
+    createWindow(true); // Create window in setup mode
   } else {
     // Path is valid, start the app normally.
     await cleanupLingeringProcesses();
@@ -279,7 +290,8 @@ ipcMain.handle("get-host-ip", () => ({
   frontendPort: FRONTEND_PORT,
   backendPort: BACKEND_PORT,
   stableUrl: `http://${store.get('customHostname', 'kairo')}.local:${FRONTEND_PORT}`,
-  comfyUIPath: store.get('comfyUIPath') // Send path to frontend
+  comfyUIPath: store.get('comfyUIPath'), // Send path to frontend
+  defaultModel: store.get('defaultModel', null)
 }));
 
 ipcMain.handle("get-hostname", () => {
@@ -333,11 +345,13 @@ ipcMain.handle("get-available-models", async () => {
     try {
         const comfyBasePath = path.join(
             COMFYUI_PATH,
-            "ComfyUI_windows_portable_nvidia",
-            "ComfyUI_windows_portable",
             "ComfyUI",
             "models"
         );
+
+        if (!fs.existsSync(comfyBasePath)) {
+            throw new Error(`The 'ComfyUI/models' directory was not found inside your selected ComfyUI path: ${COMFYUI_PATH}`);
+        }
 
         const modelSet = new Set();
         const modelDirectories = ['checkpoints', 'unet', 'gguf'];
@@ -372,6 +386,15 @@ ipcMain.handle("interrupt-generation", async () => {
   } catch (e) {
     return { success: !1, error: e.message };
   }
+});
+
+ipcMain.handle("get-default-model", async () => {
+    return store.get("defaultModel", null);
+});
+
+ipcMain.handle("set-default-model", async (event, modelName) => {
+    store.set("defaultModel", modelName);
+    return { success: true };
 });
 
 ipcMain.handle("save-image", async (e, { url: t, suggestedFilename: o }) => {
