@@ -1,6 +1,6 @@
 {
   "name": "kairo",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Kairo — Your creative AI lab powered by ComfyUI",
   "main": "main.js",
   "scripts": {
@@ -52,6 +52,7 @@
     "bonjour-service": "^1.1.1",
     "electron-store": "^10.1.0",
     "express": "^4.19.2",
-    "http-proxy-middleware": "^3.0.0"
+    "http-proxy-middleware": "^3.0.0",
+    "lowdb": "^7.0.1"
   }
 }

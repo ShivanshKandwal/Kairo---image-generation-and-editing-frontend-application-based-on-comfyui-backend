@@ -1,7 +1,7 @@
 // File: main.js
 // FINAL CORRECTED VERSION - Fixes ERR_REQUIRE_ESM error
 
-const { app, BrowserWindow, ipcMain, dialog } = require("electron");
+const { app, BrowserWindow, ipcMain, dialog, shell } = require("electron");
 const { spawn, exec } = require("child_process");
 const path = require("path");
 const fs = require("fs");
@@ -10,9 +10,9 @@ const axios = require("axios");
 const express = require("express");
 const { createProxyMiddleware } = require("http-proxy-middleware");
 const BonjourService = require("bonjour-service");
-
 // --- Global Variables ---
 let store; // Changed: No longer initializing Store class here
+let db; // Database for gallery
 let comfyProcess;
 let mainWindow;
 let bonjour;
@@ -76,6 +76,37 @@ function startFrontendServer() {
   return new Promise((resolve, reject) => {
     const expressApp = express();
     expressApp.use(express.static(FRONTEND_PATH));
+    expressApp.get("/api/gallery", async (req, res) => {
+        await db.read();
+        const hostIp = getLocalIpAddress();
+        const imageBaseUrl = `http://${hostIp}:${BACKEND_PORT}/view?`;
+        const images = db.data.images.map(img => ({
+            ...img,
+            imageUrl: `${imageBaseUrl}filename=${encodeURIComponent(img.filename)}&subfolder=${encodeURIComponent(img.subfolder)}&type=${img.type}`
+        }));
+        res.json(images);
+    });
+
+    expressApp.post("/api/gallery/save", express.json(), async (req, res) => {
+        try {
+            const { prompt, imageInfo, generationData } = req.body;
+            db.data.images.unshift({
+                id: Date.now(),
+                prompt,
+                filename: imageInfo.filename,
+                subfolder: imageInfo.subfolder,
+                type: imageInfo.type,
+                createdAt: new Date().toISOString(),
+                generationData: generationData || {}
+            });
+            await db.write();
+            res.json({ success: true });
+        } catch (e) {
+            console.error("[Gallery] API Save error:", e);
+            res.status(500).json({ success: false, error: e.message });
+        }
+    });
+
     expressApp.use(
       "/api",
       createProxyMiddleware({
@@ -170,12 +201,12 @@ function startComfyUIBackend() {
     comfyProcess.on("close", (code) => {
       if (!app.isQuitting)
         dialog.showErrorBox(
-          "Backend Closed",
-          `ComfyUI exited with code: ${code}`
+          "Backend Process Closed",
+          `The ComfyUI backend process has closed unexpectedly with exit code: ${code}.\n\nThis is often caused by errors in custom nodes or missing dependencies (like 'segment_anything'). Please check the backend console logs for specific error messages.`
         );
     });
   } catch (error) {
-    dialog.showErrorBox("Startup Error", error.message);
+    dialog.showErrorBox("Backend Startup Error", error.message);
   }
 }
 
@@ -212,13 +243,18 @@ async function initializeIpAddressFile() {
 function writeIpAddressToFile() {
   if (ipAddressFilePath) {
     try {
-      const e = getLocalIpAddress(),
-        t = `http://${e}:${FRONTEND_PORT}`,
-        o = `${t}\n\nLast updated: ${new Date().toLocaleString()}`;
-      fs.writeFileSync(ipAddressFilePath, o),
-        mainWindow &&
-          !mainWindow.isDestroyed() &&
-          mainWindow.setTitle(`Kairo Host - UI available at ${t}`);
+      const ipAddress = getLocalIpAddress();
+      const customHostname = store.get('customHostname', 'kairo');
+      const ipUrl = `http://${ipAddress}:${FRONTEND_PORT}`;
+      const hostnameUrl = `http://${customHostname}.local:${FRONTEND_PORT}`;
+      
+      const content = `You can access Kairo using a modern web browser on any device connected to the same Wi-Fi network.\n\nPrimary Address (Recommended):\n${hostnameUrl}\n\nAlternative IP Address (If the above doesn't work):\n${ipUrl}\n\nLast updated: ${new Date().toLocaleString()}`;
+      
+      fs.writeFileSync(ipAddressFilePath, content);
+      
+      if (mainWindow && !mainWindow.isDestroyed()) {
+        mainWindow.setTitle(`Kairo Host - Network URL: ${hostnameUrl}`);
+      }
     } catch (e) {
       console.error("Failed to write IP:", e);
     }
@@ -241,7 +277,21 @@ app.on("ready", async () => {
   // --- THIS IS THE FIX FOR THE ERR_REQUIRE_ESM ERROR ---
   const { default: Store } = await import("electron-store");
   store = new Store();
+  
+  const { Low } = await import("lowdb");
+  const { JSONFile } = await import("lowdb/node");
   // ---------------------------------------------------
+
+  // --- NEW: DATABASE SETUP ---
+  const dataDir = path.join(app.getPath('userData'), 'app_data');
+  if (!fs.existsSync(dataDir)) {
+      fs.mkdirSync(dataDir, { recursive: true });
+  }
+  const dbPath = path.join(dataDir, 'gallery.json');
+  const adapter = new JSONFile(dbPath);
+  db = new Low(adapter, { images: [] });
+  await db.read();
+  // -------------------------
 
   COMFYUI_PATH = store.get('comfyUIPath');
 
@@ -257,12 +307,9 @@ app.on("ready", async () => {
       startComfyUIBackend(); // Start the backend only when the path is valid
       mainWindow.show();
       
-      // --- NEW: BONJOUR/MDNS SERVICE ---
-      bonjour = new BonjourService.default();
-      const customHostname = store.get('customHostname', 'kairo');
-      bonjour.publish({ name: 'Kairo', type: 'http', port: FRONTEND_PORT, host: `${customHostname}.local` });
-      console.log(`Published ${customHostname}.local service via mDNS`);
-      // ---------------------------------
+      // --- NEW: BONJOUR/MDNS SERVICE (RELIABILITY FIXES) ---
+      startMDNSService();
+      // ----------------------------------------------------
 
     } catch (e) {
     dialog.showErrorBox(
@@ -271,8 +318,60 @@ app.on("ready", async () => {
     ),
       app.quit();
     }
-  }
+    }
 });
+
+// --- NEW: RELIABLE MDNS/BONJOUR SERVICE ---
+function startMDNSService() {
+    if (bonjour) {
+        bonjour.unpublishAll(() => {
+            bonjour.destroy();
+            console.log('[mDNS] Service stopped for restart.');
+            bonjour = null;
+            setTimeout(startMDNSService, 100); // Give it a moment before restarting
+        });
+        return;
+    }
+
+    bonjour = new BonjourService.default();
+    const customHostname = store.get('customHostname', 'kairo');
+    const serviceConfig = {
+        name: 'Kairo',
+        type: 'http',
+        port: FRONTEND_PORT,
+        host: `${customHostname}.local`
+    };
+
+    const publishedService = bonjour.publish(serviceConfig);
+
+    publishedService.on('up', () => {
+        const msg = `[mDNS] Service up: ${serviceConfig.host} on port ${serviceConfig.port}`;
+        console.log(msg);
+        if (mainWindow && !mainWindow.isDestroyed()) {
+            mainWindow.webContents.send('mdns-status', { status: 'up', message: msg });
+        }
+    });
+
+    publishedService.on('down', () => {
+        const msg = `[mDNS] Service '${serviceConfig.name}' is down.`;
+        console.log(msg);
+        if (mainWindow && !mainWindow.isDestroyed()) {
+            mainWindow.webContents.send('mdns-status', { status: 'down', message: msg });
+        }
+    });
+    
+    publishedService.on('error', (err) => {
+        const msg = `[mDNS] Error with service '${serviceConfig.name}': ${err.message}`;
+        console.error(msg);
+        dialog.showErrorBox("mDNS Error", `The local network service ('${serviceConfig.name}') failed to start. Other devices may not be able to discover this host. \n\nDetails: ${err.message}`);
+        if (mainWindow && !mainWindow.isDestroyed()) {
+            mainWindow.webContents.send('mdns-status', { status: 'error', message: msg });
+        }
+    });
+
+    console.log(`[mDNS] Publishing service with name '${serviceConfig.name}'...`);
+}
+// ------------------------------------------
 
 ipcMain.on('renderer-ready-for-logs', () => {
     console.log("✅ Renderer is ready. Flushing log buffer.");
@@ -301,16 +400,16 @@ ipcMain.handle("get-hostname", () => {
 ipcMain.handle("set-hostname", (event, newHostname) => {
     store.set('customHostname', newHostname);
     
-    if (bonjour) {
-        bonjour.unpublishAll(() => {
-            bonjour.destroy();
-            app.relaunch();
-            app.quit();
-        });
-    } else {
+    // Relaunch to apply the new hostname. The before-quit handler will clean up mDNS.
+    dialog.showMessageBox(mainWindow, {
+        type: 'info',
+        title: 'Hostname Changed',
+        message: 'The application will now restart to apply the new hostname.',
+        buttons: ['OK']
+    }).then(() => {
         app.relaunch();
         app.quit();
-    }
+    });
 });
 
 ipcMain.handle('select-comfyui-path', async () => {
@@ -425,16 +524,78 @@ ipcMain.handle(
   async (e, t) => (store.set("customKeywords", t), { success: !0 })
 );
 
-app.on("before-quit", () => {
-  (app.isQuitting = !0),
-    comfyProcess &&
-      !comfyProcess.killed &&
-      spawn("taskkill", ["/PID", comfyProcess.pid, "/F", "/T"]),
-    ipAddressUpdateInterval && clearInterval(ipAddressUpdateInterval),
-    bonjour && bonjour.unpublishAll(() => {
-        console.log('Unpublished all mDNS services.');
-        bonjour.destroy();
-    });
+// --- NEW: GALLERY IPC HANDLERS ---
+ipcMain.handle("gallery:save", async (event, { prompt, imageInfo, generationData }) => {
+    try {
+        db.data.images.unshift({ 
+            id: Date.now(), 
+            prompt, 
+            filename: imageInfo.filename,
+            subfolder: imageInfo.subfolder,
+            type: imageInfo.type,
+            createdAt: new Date().toISOString(),
+            generationData: generationData || {} // Store extra data
+        });
+        await db.write();
+        return { success: true };
+    } catch (e) {
+        console.error("[Gallery] Save error:", e);
+        return { success: false, error: e.message };
+    }
+});
+
+
+ipcMain.handle("gallery:get", async () => {
+    await db.read();
+    const hostIp = getLocalIpAddress();
+    const imageBaseUrl = `http://${hostIp}:${BACKEND_PORT}/view?`;
+    const images = db.data.images.map(img => ({
+        ...img,
+        imageUrl: `${imageBaseUrl}filename=${encodeURIComponent(img.filename)}&subfolder=${encodeURIComponent(img.subfolder)}&type=${img.type}`
+    }));
+    return images;
+});
+
+ipcMain.handle("gallery:delete", async (event, imageId) => {
+    db.data.images = db.data.images.filter(img => img.id !== imageId);
+    await db.write();
+    return { success: true };
+});
+
+ipcMain.handle("gallery:clear", async () => {
+    db.data.images = [];
+    await db.write();
+    return { success: true };
+});
+
+ipcMain.handle("gallery:open-folder", (event, image) => {
+    const fullPath = path.join(COMFYUI_PATH, "output", image.subfolder, image.filename);
+    shell.showItemInFolder(fullPath);
+});
+// -----------------------------------
+
+app.on("before-quit", (event) => {
+    app.isQuitting = true;
+
+    if (comfyProcess && !comfyProcess.killed) {
+        spawn("taskkill", ["/PID", comfyProcess.pid, "/F", "/T"]);
+    }
+
+    if (ipAddressUpdateInterval) {
+        clearInterval(ipAddressUpdateInterval);
+    }
+
+    if (bonjour) {
+        console.log('[mDNS] Unpublishing all services before quit.');
+        // Use a synchronous-like approach for quitting
+        try {
+            bonjour.unpublishAllSync();
+            bonjour.destroy();
+            console.log('[mDNS] Services unpublished and destroyed.');
+        } catch (e) {
+            console.error('[mDNS] Error during shutdown:', e);
+        }
+    }
 });
 
 app.on("window-all-closed", () => {

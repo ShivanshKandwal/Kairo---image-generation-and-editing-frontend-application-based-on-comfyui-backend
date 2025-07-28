@@ -2,7 +2,7 @@
 function initializeGlowEffect() {
     // We select all elements that should have the glow effect.
     // This selector will work on both index.html and settings.html.
-    const glowElements = document.querySelectorAll('.tool-card, .settings-link');
+    const glowElements = document.querySelectorAll('.tool-card, .settings-link, .gallery-link');
 
     if (glowElements.length > 0) {
         console.log(`[Glow Effect] Initializing for ${glowElements.length} elements.`);

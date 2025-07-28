@@ -1,10 +1,17 @@
 // File: preload.js
 const { contextBridge, ipcRenderer } = require('electron');
 
-contextBridge.exposeInMainWorld('electronAPI', {
+contextBridge.exposeInMainWorld('electron', {
     saveImage: (data) => ipcRenderer.invoke('save-image', data),
     getKeywords: () => ipcRenderer.invoke('keywords:get'),
-    saveKeywords: (keywords) => ipcRenderer.invoke('keywords:save', keywords)
+    saveKeywords: (keywords) => ipcRenderer.invoke('keywords:save', keywords),
+    
+    // Gallery Functions
+    saveToGallery: (data) => ipcRenderer.invoke('gallery:save', data),
+    getGallery: () => ipcRenderer.invoke('gallery:get'),
+    deleteFromGallery: (id) => ipcRenderer.invoke('gallery:delete', id),
+    clearGallery: () => ipcRenderer.invoke('gallery:clear'),
+    openImageFolder: (filename) => ipcRenderer.send('gallery:open-folder', filename)
 });
 
 contextBridge.exposeInMainWorld('comfyAPI', {

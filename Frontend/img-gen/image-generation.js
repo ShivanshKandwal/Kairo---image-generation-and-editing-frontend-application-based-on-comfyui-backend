@@ -4,7 +4,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
     // --- Dynamic Path Configuration ---
-    const isElectron = typeof window.electronAPI !== 'undefined';
+    const isElectron = typeof window.electron !== 'undefined';
     const API_BASE_PATH = isElectron ? 'http://127.0.0.1:8188' : '/api'; // For ComfyUI
     const API_BASE_PATH_CUSTOM = '/api'; // For our own API
     const getWsUrl = (clientId) => {
@@ -59,8 +59,8 @@ document.addEventListener('DOMContentLoaded', () => {
         let loadedKeywords = [];
         try {
             if (isElectron) {
-                console.log("Running in Electron Host. Using electronAPI.");
-                loadedKeywords = await window.electronAPI.getKeywords() || [];
+                console.log("Running in Electron Host. Using electron.");
+                loadedKeywords = await window.electron.getKeywords() || [];
             } else {
                 console.log("Running in Browser Client. Using fetch API.");
                 const response = await fetch(`${API_BASE_PATH_CUSTOM}/keywords`);
@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
         customKeywords = [...keywords];
         try {
             if (isElectron) {
-                await window.electronAPI.saveKeywords(keywords);
+                await window.electron.saveKeywords(keywords);
             } else {
                 const response = await fetch(`${API_BASE_PATH_CUSTOM}/keywords`, {
                     method: 'POST',
@@ -189,7 +189,15 @@ document.addEventListener('DOMContentLoaded', () => {
         ui.statusDiv.textContent = "🎨 Preparing workflow...";
         try {
             const activeModel = localStorage.getItem("kairo-active-model"); 
-            if (!activeModel) throw new Error("No active model selected. Please go to Settings.");
+            if (!activeModel) {
+                const models = await fetchModels();
+                if (models.length > 0) {
+                    localStorage.setItem("kairo-active-model", models[0]);
+                    activeModel = models[0];
+                } else {
+                    throw new Error("No models found. Please go to Settings.");
+                }
+            }
             const blueprint = activeModel.toLowerCase().endsWith('.gguf') ? GGUF_WORKFLOW_BLUEPRINT : FP8_WORKFLOW_BLUEPRINT;
             let workflow = JSON.parse(JSON.stringify(blueprint));
             currentWorkflow = workflow;
@@ -308,9 +316,41 @@ document.addEventListener('DOMContentLoaded', () => {
         return userInput;
     };
 
-    const displayFinalImage = (imageInfo, generationParams) => {
+    const displayFinalImage = async (imageInfo, generationParams) => {
         const imageUrl = `${API_BASE_PATH}/view?filename=${encodeURIComponent(imageInfo.filename)}&subfolder=${encodeURIComponent(imageInfo.subfolder)}&type=${imageInfo.type}`;
         lastGeneratedResult = { url: imageUrl, filename: `Kairo_Generated_${generationParams.seed}.png` };
+
+        // --- NEW: SAVE TO GALLERY (UNIVERSAL) ---
+        const payload = {
+            prompt: generationParams.positivePrompt,
+            imageInfo: imageInfo,
+            generationData: {
+                seed: generationParams.seed,
+                steps: generationParams.steps,
+                guidance: generationParams.guidance,
+                width: generationParams.width,
+                height: generationParams.height,
+                model: localStorage.getItem("kairo-active-model") || "Unknown"
+            }
+        };
+
+        try {
+            if (isElectron) {
+                await window.electron.saveToGallery(payload);
+            } else {
+                await fetch(`${API_BASE_PATH_CUSTOM}/gallery/save`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+            }
+            console.log('Saved to gallery:', imageInfo.filename);
+        } catch (e) {
+            console.error('Failed to save to gallery:', e);
+        }
+        // ------------------------------------
+        // --------------------------
+
         ui.outputImage.src = imageUrl;
         ui.outputImage.classList.remove("hidden");
         ui.placeholderText.classList.add("hidden");
@@ -366,7 +406,7 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         if (!lastGeneratedResult) return;
         if (isElectron) {
-            await window.electronAPI.saveImage(lastGeneratedResult);
+            await window.electron.saveImage(lastGeneratedResult);
         } else {
             const link = document.createElement("a");
             link.href = lastGeneratedResult.url;
@@ -416,9 +456,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // 4. Setup other UI listeners.
         const generationSettingsGroup = document.getElementById("generation-settings-group");
         if (generationSettingsGroup) {
-            generationSettingsGroup.querySelector(".collapsible-header").addEventListener("click", () => {
-                generationSettingsGroup.classList.toggle("expanded");
-            });
+            const header = generationSettingsGroup.querySelector(".collapsible-header");
+            if (header) {
+                header.addEventListener("click", () => {
+                    generationSettingsGroup.classList.toggle("expanded");
+                });
+            }
         }
         
         document.querySelectorAll('input[type="range"]').forEach((slider) => {

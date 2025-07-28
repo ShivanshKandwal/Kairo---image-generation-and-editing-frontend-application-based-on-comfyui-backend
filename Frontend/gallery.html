@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kairo - Generation Gallery</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="gallery-container">
+        <header class="gallery-header">
+            <h1>Generation Gallery</h1>
+            <p>A collection of your generated images and their prompts.</p>
+            <div class="gallery-header-actions">
+                <a href="index.html" class="action-button">                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="20" height="20"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" /></svg>
+ Back to Generator</a>
+                <button id="clear-gallery-btn" class="action-button stop">Clear All</button>
+            </div>
+        </header>
+
+        <main id="gallery-grid">
+            <!-- Images will be loaded here by gallery.js -->
+        </main>
+
+        <div id="loading-indicator">Loading...</div>
+        <div id="empty-message" style="display: none;">
+            <h2>Your gallery is empty.</h2>
+            <p>Go generate some images to see them here!</p>
+        </div>
+    </div>
+
+    <!-- Modal for viewing full image -->
+    <div id="image-modal" class="modal">
+        <span class="close-button">&times;</span>
+        <img class="modal-content" id="modal-image">
+        <div id="modal-caption"></div>
+    </div>
+
+    <script src="gallery.js"></script>
+</body>
+</html>
