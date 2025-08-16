@@ -21,7 +21,7 @@
             display: block;
             opacity: 1;
         }
-        /* Style for the new host address box */
+        
         #host-address-container {
             margin-top: 2rem;
             text-align: center;
@@ -87,7 +87,7 @@
             transform: translateX(-50%) translateY(-10px);
         }
 
-        /* --- NEW: SETUP SCREEN STYLES --- */
+        
         #setup-screen {
             display: flex;
             flex-direction: column;
@@ -132,14 +132,14 @@
     </script>
 </head>
 <body>
-    <!-- ==== NEW: SETUP SCREEN ==== -->
+    
     <div id="setup-screen" class="hidden">
         <h1>Welcome to Kairo</h1>
         <p>To get started, Kairo needs to know where your ComfyUI installation is located. Please download the standard "ComfyUI_windows_portable" package if you haven't already.</p>
         <p>Click the button below and select the main "ComfyUI_windows_portable" folder.</p>
         <button id="select-comfyui-path-btn" class="action-button">Select ComfyUI Folder</button>
     </div>
-    <!-- ========================== -->
+    
 
     <div class="homepage-container">
         
@@ -158,7 +158,7 @@
                     </div>
                 </div>
 
-                <!-- ==== NEW: HOST ADDRESS DISPLAY (Only visible in Electron) ==== -->
+                
                 <div id="host-address-container" class="hidden">
                     <p>Your Kairo studio is available on your local network. Click to copy:</p>
                     <div class="url-container">
@@ -166,7 +166,7 @@
                         <div id="ip-url-box" class="url-box" title="Click to copy IP address (fallback)">...</div>
                     </div>
                 </div>
-                <!-- ============================================================= -->
+                
             </div>
         </header>
 
@@ -220,9 +220,8 @@
         </div>
     </div>
 <script>
-    // This script will now be allowed to run because of the CSP change.
-
-    // --- Code that was in apiConfig.js is now included here ---
+    
+    
     const KairoServer = {
         async waitForReady() {
             const MAX_ATTEMPTS = 60;
@@ -247,7 +246,7 @@
         }
     };
 
-    // --- Main script logic starts here ---
+    
     document.addEventListener('DOMContentLoaded', () => {
         const loaderContainer = document.getElementById('startup-loader');
         const mainContent = document.getElementById('main-content-wrapper');
@@ -255,23 +254,23 @@
         const setupScreen = document.getElementById('setup-screen');
         const homepageContainer = document.querySelector('.homepage-container');
 
-        // --- NEW: SETUP LOGIC ---
+        
         if (isElectron) {
             window.comfyAPI.getHostIp().then(info => {
                 if (!info.comfyUIPath) {
-                    // Show setup screen if path is not set
+                    
                     homepageContainer.classList.add('hidden');
                     setupScreen.classList.remove('hidden');
                     document.getElementById('select-comfyui-path-btn').addEventListener('click', () => {
                         window.comfyAPI.selectComfyUIPath();
                     });
-                    return; // Stop further execution
+                    return; 
                 }
-                // If path IS set, continue with normal startup
+                
                 startNormalLoad();
             });
         } else {
-            // For browser clients, always try to load normally
+            
             startNormalLoad();
         }
 

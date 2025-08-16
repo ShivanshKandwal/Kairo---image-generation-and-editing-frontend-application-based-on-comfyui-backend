@@ -1,6 +1,3 @@
-// File: main.js
-// FINAL CORRECTED VERSION - Fixes ERR_REQUIRE_ESM error
-
 const { app, BrowserWindow, ipcMain, dialog, shell } = require("electron");
 const { spawn, exec } = require("child_process");
 const path = require("path");
@@ -10,9 +7,8 @@ const axios = require("axios");
 const express = require("express");
 const { createProxyMiddleware } = require("http-proxy-middleware");
 const BonjourService = require("bonjour-service");
-// --- Global Variables ---
-let store; // Changed: No longer initializing Store class here
-let db; // Database for gallery
+let store; 
+let db; 
 let comfyProcess;
 let mainWindow;
 let bonjour;
@@ -23,18 +19,24 @@ let ipAddressFilePath;
 let rendererReady = false;
 const logBuffer = [];
 
-// --- NEW: RELIABLE PATHING LOGIC ---
 const IS_PACKAGED = app.isPackaged;
 const UNPACKED_PATH_BASE = IS_PACKAGED
   ? path.join(process.resourcesPath, "app.asar.unpacked")
   : __dirname;
 const FRONTEND_PATH = path.join(UNPACKED_PATH_BASE, "Frontend");
 const PRELOAD_PATH = path.join(__dirname, "preload.js");
-let COMFYUI_PATH; // Will be set after checking store
+let COMFYUI_PATH; 
 
-// ========== Utility & Core ==========
 function getLocalIpAddress() {
   const interfaces = os.networkInterfaces();
+  const wifiInterface = interfaces["Wi-Fi"];
+  if (wifiInterface) {
+    for (const net of wifiInterface) {
+      if (net.family === "IPv4" && !net.internal) {
+        return net.address;
+      }
+    }
+  }
   for (const name of Object.keys(interfaces)) {
     for (const net of interfaces[name]) {
       if (net.family === "IPv4" && !net.internal) {
@@ -71,7 +73,6 @@ function cleanupLingeringProcesses() {
   });
 }
 
-// ========== Server & Window Management ==========
 function startFrontendServer() {
   return new Promise((resolve, reject) => {
     const expressApp = express();
@@ -210,7 +211,6 @@ function startComfyUIBackend() {
   }
 }
 
-// ========== App Lifecycle & Other Functions ==========
 async function initializeIpAddressFile() {
   let e = store.get("ipAddressFilePath");
   if (e && fs.existsSync(e)) ipAddressFilePath = e;
@@ -274,15 +274,12 @@ app.on("ready", async () => {
       (mainWindow.isMinimized() && mainWindow.restore(), mainWindow.focus());
   });
 
-  // --- THIS IS THE FIX FOR THE ERR_REQUIRE_ESM ERROR ---
   const { default: Store } = await import("electron-store");
   store = new Store();
   
   const { Low } = await import("lowdb");
   const { JSONFile } = await import("lowdb/node");
-  // ---------------------------------------------------
-
-  // --- NEW: DATABASE SETUP ---
+  
   const dataDir = path.join(app.getPath('userData'), 'app_data');
   if (!fs.existsSync(dataDir)) {
       fs.mkdirSync(dataDir, { recursive: true });
@@ -291,26 +288,21 @@ app.on("ready", async () => {
   const adapter = new JSONFile(dbPath);
   db = new Low(adapter, { images: [] });
   await db.read();
-  // -------------------------
-
+  
   COMFYUI_PATH = store.get('comfyUIPath');
 
   if (!COMFYUI_PATH || !fs.existsSync(COMFYUI_PATH)) {
-    // If path is not set or invalid, go into setup mode.
-    createWindow(true); // Create window in setup mode
+    createWindow(true); 
   } else {
-    // Path is valid, start the app normally.
     await cleanupLingeringProcesses();
     try {
       await startFrontendServer();
       createWindow();
-      startComfyUIBackend(); // Start the backend only when the path is valid
+      startComfyUIBackend(); 
       mainWindow.show();
       
-      // --- NEW: BONJOUR/MDNS SERVICE (RELIABILITY FIXES) ---
       startMDNSService();
-      // ----------------------------------------------------
-
+      
     } catch (e) {
     dialog.showErrorBox(
       "Fatal Error",
@@ -321,14 +313,13 @@ app.on("ready", async () => {
     }
 });
 
-// --- NEW: RELIABLE MDNS/BONJOUR SERVICE ---
 function startMDNSService() {
     if (bonjour) {
         bonjour.unpublishAll(() => {
             bonjour.destroy();
             console.log('[mDNS] Service stopped for restart.');
             bonjour = null;
-            setTimeout(startMDNSService, 100); // Give it a moment before restarting
+            setTimeout(startMDNSService, 100); 
         });
         return;
     }
@@ -336,7 +327,7 @@ function startMDNSService() {
     bonjour = new BonjourService.default();
     const customHostname = store.get('customHostname', 'kairo');
     const serviceConfig = {
-        name: 'Kairo',
+        name: customHostname,
         type: 'http',
         port: FRONTEND_PORT,
         host: `${customHostname}.local`
@@ -371,7 +362,6 @@ function startMDNSService() {
 
     console.log(`[mDNS] Publishing service with name '${serviceConfig.name}'...`);
 }
-// ------------------------------------------
 
 ipcMain.on('renderer-ready-for-logs', () => {
     console.log("✅ Renderer is ready. Flushing log buffer.");
@@ -389,7 +379,7 @@ ipcMain.handle("get-host-ip", () => ({
   frontendPort: FRONTEND_PORT,
   backendPort: BACKEND_PORT,
   stableUrl: `http://${store.get('customHostname', 'kairo')}.local:${FRONTEND_PORT}`,
-  comfyUIPath: store.get('comfyUIPath'), // Send path to frontend
+  comfyUIPath: store.get('comfyUIPath'), 
   defaultModel: store.get('defaultModel', null)
 }));
 
@@ -400,7 +390,6 @@ ipcMain.handle("get-hostname", () => {
 ipcMain.handle("set-hostname", (event, newHostname) => {
     store.set('customHostname', newHostname);
     
-    // Relaunch to apply the new hostname. The before-quit handler will clean up mDNS.
     dialog.showMessageBox(mainWindow, {
         type: 'info',
         title: 'Hostname Changed',
@@ -424,7 +413,6 @@ ipcMain.handle('select-comfyui-path', async () => {
   }
 
   const selectedPath = filePaths[0];
-  // Basic validation: check if a key file exists
   const validationFilePath = path.join(selectedPath, 'run_nvidia_gpu.bat');
   if (!fs.existsSync(validationFilePath)) {
     dialog.showErrorBox('Invalid Folder', `The selected folder does not appear to be a valid ComfyUI installation. Could not find 'run_nvidia_gpu.bat'.`);
@@ -433,7 +421,6 @@ ipcMain.handle('select-comfyui-path', async () => {
 
   store.set('comfyUIPath', selectedPath);
   
-  // Relaunch the app to apply the new path
   app.relaunch();
   app.quit();
 
@@ -524,7 +511,6 @@ ipcMain.handle(
   async (e, t) => (store.set("customKeywords", t), { success: !0 })
 );
 
-// --- NEW: GALLERY IPC HANDLERS ---
 ipcMain.handle("gallery:save", async (event, { prompt, imageInfo, generationData }) => {
     try {
         db.data.images.unshift({ 
@@ -534,7 +520,7 @@ ipcMain.handle("gallery:save", async (event, { prompt, imageInfo, generationData
             subfolder: imageInfo.subfolder,
             type: imageInfo.type,
             createdAt: new Date().toISOString(),
-            generationData: generationData || {} // Store extra data
+            generationData: generationData || {} 
         });
         await db.write();
         return { success: true };
@@ -572,7 +558,6 @@ ipcMain.handle("gallery:open-folder", (event, image) => {
     const fullPath = path.join(COMFYUI_PATH, "output", image.subfolder, image.filename);
     shell.showItemInFolder(fullPath);
 });
-// -----------------------------------
 
 app.on("before-quit", (event) => {
     app.isQuitting = true;
@@ -587,7 +572,7 @@ app.on("before-quit", (event) => {
 
     if (bonjour) {
         console.log('[mDNS] Unpublishing all services before quit.');
-        // Use a synchronous-like approach for quitting
+        
         try {
             bonjour.unpublishAllSync();
             bonjour.destroy();
