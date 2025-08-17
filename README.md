@@ -18,6 +18,42 @@ Welcome to Kairo, a powerful and user-friendly application that harnesses the ca
 *   **ComfyUI:** As the powerful and flexible AI image generation and editing backend.
 *   **HTML, CSS, JavaScript:** For the user-friendly frontend.
 
+## Generative AI Core: FLUX.1 Kontext [Dev]
+
+Our project's advanced image manipulation capabilities are powered by **FLUX.1 Kontext [Dev]**, a state-of-the-art, open-source Generative AI model from Black Forest Labs. This section outlines its core technology and why it was chosen for our needs.
+
+### A Next-Generation Multimodal Architecture
+
+FLUX.1 Kontext [Dev] is not a simple text-to-image model. It is a 12-billion parameter **multimodal diffusion transformer**. This advanced architecture allows it to:
+
+* **Understand Multimodally:** It natively processes both **text prompts and image inputs simultaneously**, giving it a deep contextual understanding that is essential for precise editing.
+* **Leverage Transformers:** By using a transformer backbone, it excels at understanding relationships and context within an image, much like large language models understand context in text.
+
+This combination enables a level of intelligent editing and consistency that marks a significant step forward for generative image models.
+
+### Local Execution: Full Control & Flexibility
+
+Unlike many high-end generative models that are only accessible via paid APIs, **FLUX.1 Kontext [Dev] runs entirely on local machines**. This is a critical advantage for our project, providing:
+
+* **Unparalleled Flexibility:** We can integrate the model directly into our workflows without external dependencies.
+* **No Latency Issues:** All processing happens locally, ensuring interactive speeds for real-time editing and generation.
+* **Privacy and Security:** Sensitive data remains within our environment.
+* **Cost-Effectiveness:** Eliminates per-image generation costs associated with API calls.
+
+### Solving Core Generative AI Challenges
+
+This model directly addresses several long-standing challenges in generative imagery, making our workflows more robust and predictable.
+
+*  **Character & Object Consistency:** It solves the common problem of "visual drift," where a character's appearance changes randomly between generations. FLUX.1 maintains feature and composition integrity across multiple, iterative edits.
+*  **High-Fidelity Style Control:** The model can ingest a reference image and apply its unique aesthetic to new generations, providing fine-grained control over artistic style.
+*  **Precise, Context-Aware Editing:** It moves beyond simple in-painting or out-painting. The model understands edit instructions (`"make the shirt blue"`) in the context of the entire image, ensuring changes are seamless and realistic without corrupting other elements.
+
+### Open Source and Ecosystem Ready
+
+With open weights and a non-commercial license for generated assets, FLUX.1 Kontext [Dev] empowers research and development. Its integration into key community tools like **ComfyUI** and the **Diffusers** library ensures it is well-supported and can be easily incorporated into standard Generative AI pipelines.
+
+By leveraging this powerful, locally-run model, our project can push the boundaries of creative image manipulation while maintaining full control over the generation process.
+
 ## Getting Started
 
 ### For Hosts (Running the Kairo Application)
