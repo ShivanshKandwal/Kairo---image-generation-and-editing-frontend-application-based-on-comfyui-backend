@@ -18,36 +18,44 @@ document.addEventListener("DOMContentLoaded", () => {
   let lastGeneratedResult = null;
 
   const WORKFLOW_BLUEPRINT = {
-    1: {
-      inputs: {
-        image: "placeholder.png",
-        mask_channel: "alpha",
-        scale_by: 1.0,
-        resize_mode: "longest_side",
-        size: 0,
+    "1": {
+      "inputs": {
+        "image": "placeholder.png",
+        "mask_channel": "alpha",
+        "scale_by": 1.0,
+        "resize_mode": "longest_side",
+        "size": 0,
+        "image_path_or_URL": "placeholder.png",
+        "upscale_method": "lanczos"
       },
-      class_type: "AILab_LoadImage",
+      "class_type": "AILab_LoadImage"
     },
-    2: {
-      inputs: {
-        model: "BiRefNet-general",
-        mask_blur: 0,
-        mask_offset: 0,
-        invert_output: false,
-        refine_foreground: false,
-        background: "Alpha",
-        image: ["1", 0],
+    "2": {
+      "inputs": {
+        "model": "BiRefNet-general",
+        "mask_blur": 0,
+        "mask_offset": 0,
+        "invert_output": false,
+        "refine_foreground": false,
+        "background": "Alpha",
+        "image": [
+          "1",
+          0
+        ]
       },
-      class_type: "BiRefNetRMBG",
+      "class_type": "BiRefNetRMBG"
     },
-    5: {
-      inputs: {
-        filename_prefix: "BG_Removed",
-        only_preview: true,
-        images: ["2", 0],
+    "5": {
+      "inputs": {
+        "filename_prefix": "BG_Removed",
+        "only_preview": true,
+        "images": [
+          "2",
+          0
+        ]
       },
-      class_type: "easy imageSave",
-    },
+      "class_type": "easy imageSave"
+    }
   };
   const MAPPING = {
     loadImageNode: "1",
@@ -97,6 +105,7 @@ document.addEventListener("DOMContentLoaded", () => {
       let workflow = JSON.parse(JSON.stringify(WORKFLOW_BLUEPRINT));
       const userInput = { imageName: imageData.name };
       workflow[MAPPING.loadImageNode].inputs.image = userInput.imageName;
+      workflow[MAPPING.loadImageNode].inputs.image_path_or_URL = userInput.imageName;
 
       const clientId = Math.random().toString(36).substring(2);
       // FIXED: Use dynamic API_BASE_PATH
@@ -111,6 +120,7 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
           errorData = JSON.parse(errorData);
         } catch {}
+        console.error("API Error:", errorData);
         throw new Error(
           `API request failed: ${
             apiResponse.statusText

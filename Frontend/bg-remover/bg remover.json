@@ -1,37 +1,49 @@
 {
-  "1": {
-    "inputs": {
-      "image": "img_00001_ (1).png"
-    },
-    "class_type": "LoadImage",
-    "_meta": {
-      "title": "Load Image"
-    }
-  },
-  "2": {
-    "inputs": {
-      "input_image": [
-        "1",
-        0
-      ]
-    },
-    "class_type": "BackgroundEraseNetwork",
-    "_meta": {
-      "title": "Background Erase Network Image"
-    }
-  },
   "5": {
     "inputs": {
       "filename_prefix": "ComfyUI",
       "only_preview": true,
       "images": [
-        "2",
+        "7",
         0
       ]
     },
     "class_type": "easy imageSave",
     "_meta": {
       "title": "Save Image (Simple)"
+    }
+  },
+  "7": {
+    "inputs": {
+      "model": "BiRefNet-general",
+      "mask_blur": 0,
+      "mask_offset": 0,
+      "invert_output": false,
+      "refine_foreground": false,
+      "background": "Alpha",
+      "background_color": "#222222",
+      "image": [
+        "9",
+        0
+      ]
+    },
+    "class_type": "BiRefNetRMBG",
+    "_meta": {
+      "title": "BiRefNet Remove Background (RMBG)"
+    }
+  },
+  "9": {
+    "inputs": {
+      "image_path_or_URL": "",
+      "image": "image.webp",
+      "upscale_method": "lanczos",
+      "scale_by": 1,
+      "resize_mode": "longest_side",
+      "size": 0
+    },
+    "class_type": "AILab_LoadImage",
+    "_meta": {
+      "title": "Load Image (RMBG) 🖼️"
     }
   }
 }
