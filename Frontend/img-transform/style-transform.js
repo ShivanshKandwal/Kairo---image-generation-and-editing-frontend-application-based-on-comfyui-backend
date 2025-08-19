@@ -4,7 +4,7 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     // --- Dynamic Path Configuration ---
-    const isElectron = typeof window.comfyAPI !== 'undefined';
+    const isElectron = typeof window.electron !== 'undefined';
     const API_BASE_PATH = isElectron ? 'http://127.0.0.1:8188' : '/api';
 
     const getWsUrl = (clientId) => {
@@ -224,7 +224,7 @@ const FP8_WORKFLOW_BLUEPRINT = { "6":{"inputs":{"text":"...","clip":["193",0]},"
         e.preventDefault();
         if (!lastGeneratedResult) return;
         if (isElectron) {
-            await window.electronAPI.saveImage(lastGeneratedResult);
+            await window.electron.saveImage(lastGeneratedResult);
         } else {
             const link = document.createElement('a');
             link.href = lastGeneratedResult.url;

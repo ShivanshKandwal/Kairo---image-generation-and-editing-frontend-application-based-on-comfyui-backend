@@ -3,7 +3,7 @@
 
 document.addEventListener("DOMContentLoaded", () => {
   // --- Dynamic Path Configuration ---
-  const isElectron = typeof window.comfyAPI !== "undefined";
+  const isElectron = typeof window.electron !== 'undefined';
   const API_BASE_PATH = isElectron ? "http://127.0.0.1:8188" : "/api";
 
   const getWsUrl = (clientId) => {
@@ -208,7 +208,7 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     if (!lastGeneratedImage) return;
     if (isElectron) {
-      await window.electronAPI.saveImage(lastGeneratedImage);
+      await window.electron.saveImage(lastGeneratedImage);
     } else {
       const link = document.createElement("a");
       link.href = lastGeneratedImage.url;
