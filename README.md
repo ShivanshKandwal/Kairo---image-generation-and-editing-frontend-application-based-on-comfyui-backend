@@ -1,10 +1,12 @@
 # Kairo - AI Image Generation Suite
 
-![Welcome](https://raw.githubusercontent.com/ShivanshKandwal/Kairo---image-generation-and-editing-frontend-application-based-on-comfyui-backend/main/images_kairo/kairo_welcome.png)
+![Welcome](images_kairo/kairo_welcome.png)
+
 
 Welcome to Kairo, a powerful and user-friendly application that harnesses the capabilities of ComfyUI to provide a seamless AI image generation experience. Kairo allows you to host a ComfyUI backend on one machine and connect to it from any other device on your network via a simple web browser.
 
-![Demo GIF](https://raw.githubusercontent.com/ShivanshKandwal/Kairo---image-generation-and-editing-frontend-application-based-on-comfyui-backend/main/images_kairo/demo_gif.gif)
+![Demo GIF](images_kairo/demo_gif.gif)
+
 
 ## Features
 
@@ -24,7 +26,8 @@ Welcome to Kairo, a powerful and user-friendly application that harnesses the ca
 
 ## Generative AI Core: FLUX.1 Kontext [Dev]
 
-![Dashboard](https://raw.githubusercontent.com/ShivanshKandwal/Kairo---image-generation-and-editing-frontend-application-based-on-comfyui-backend/main/images_kairo/kairo_dashboard.png)
+![Dashboard](images_kairo/kairo_dashboard.png)
+
 
 Our project's advanced image manipulation capabilities are powered by **FLUX.1 Kontext [Dev]**, a state-of-the-art, open-source Generative AI model from Black Forest Labs. This section outlines its core technology and why it was chosen for our needs.
 
@@ -64,7 +67,7 @@ By leveraging this powerful, locally-run model, our project can push the boundar
 
 ### For Hosts (Running the Kairo Application)
 
-![Demo GIF](https://raw.githubusercontent.com/ShivanshKandwal/Kairo---image-generation-and-editing-frontend-application-based-on-comfyui-backend/main/images_kairo/demo_gif.gif)
+![Demo GIF](images_kairo/demo_gif.gif)
 
 1.  **Download and Install ComfyUI:** If you don't already have it, download and install a standard ComfyUI package.
 2.  **Configure ComfyUI:**
@@ -119,7 +122,7 @@ Kairo 2.0 provides a comprehensive suite of AI-powered image manipulation tools,
   - **Model Support**: Supports both GGUF and FP8 model formats.
   - **Prompting Guide**: Provides in-app guidance and examples for effective text-to-image generation.
 
-![Image Generation](https://raw.githubusercontent.com/ShivanshKandwal/Kairo---image-generation-and-editing-frontend-application-based-on-comfyui-backend/main/images_kairo/kairo_generation.png)
+   ![Image Generation](images_kairo/kairo_generation.png)
 
 ### 2. **Combine Images** (`Frontend/img-edit/combine-images.html`)
 - **Purpose**: Seamlessly merge two distinct images into a single, cohesive scene.
@@ -129,7 +132,7 @@ Kairo 2.0 provides a comprehensive suite of AI-powered image manipulation tools,
   - **Scene Description**: Provide a text prompt to guide the AI in blending the images into a unified scene.
   - **Intelligent Blending**: AI-powered blending ensures smooth transitions and contextual integration.
  
-    ![Image Combining](https://raw.githubusercontent.com/ShivanshKandwal/Kairo---image-generation-and-editing-frontend-application-based-on-comfyui-backend/main/images_kairo/kairo_combine.png)
+    ![Image Combining](images_kairo/kairo_combine.png)
 
 ### 3. **Image Editing** (`Frontend/img-edit/image-editing.html`)
 - **Purpose**: Modify existing images using natural language descriptions.
@@ -139,7 +142,7 @@ Kairo 2.0 provides a comprehensive suite of AI-powered image manipulation tools,
   - **Context Preservation**: The AI understands the original image context, allowing for precise edits without altering unrelated elements.
   - **Denoise Strength**: Adjust the intensity of the edit, from subtle tweaks to significant transformations.
  
-    ![Image Editing](https://raw.githubusercontent.com/ShivanshKandwal/Kairo---image-generation-and-editing-frontend-application-based-on-comfyui-backend/main/images_kairo/kairo_editing.png)
+    ![Image Editing](images_kairo/kairo_editing.png)
 
 
 ### 4. **Replace or Transform** (`Frontend/replace-or-change/replace-or-change.html`)
@@ -164,7 +167,7 @@ Kairo 2.0 provides a comprehensive suite of AI-powered image manipulation tools,
   - **Style-Content Fusion**: The AI combines the visual style of the uploaded image with the subject matter from your prompt.
   - **Adjustable Dimensions**: Control the width and height of the newly generated image.
  
-    ![Style Transfer](https://raw.githubusercontent.com/ShivanshKandwal/Kairo---image-generation-and-editing-frontend-application-based-on-comfyui-backend/main/images_kairo/kairo_style_transform.png)
+    ![Style Transfer](images_kairo/kairo_style_transform.png)
 
 
 ### 7. **Upscale Image** (`Frontend/upscale-image.html`)
@@ -175,7 +178,7 @@ Kairo 2.0 provides a comprehensive suite of AI-powered image manipulation tools,
   - **Intelligent Upscaling**: AI models intelligently add pixels and detail, avoiding simple stretching or pixelation.
   - **Model Configuration**: Allows for configuration of specific upscaling models within the `upscale-image.js` file.
 
-     ![Image Upscaling](https://raw.githubusercontent.com/ShivanshKandwal/Kairo---image-generation-and-editing-frontend-application-based-on-comfyui-backend/main/images_kairo/kairo_upscale.png)
+     ![Image Upscaling](images_kairo/kairo_upscale.png)
 
 
 ### 8. **Background Remover** (`Frontend/bg-remover/bg-remover.html`)
@@ -186,7 +189,7 @@ Kairo 2.0 provides a comprehensive suite of AI-powered image manipulation tools,
   - **Transparent Output**: Generates PNG images with transparent backgrounds, ready for compositing.
   - **No Manual Masking**: Eliminates the need for manual selection or masking of the subject.
  
-    ![Background Remover](https://raw.githubusercontent.com/ShivanshKandwal/Kairo---image-generation-and-editing-frontend-application-based-on-comfyui-backend/main/images_kairo/kairo_bg_remover.png)
+    ![Background Remover](images_kairo/kairo_bg_remover.png)
 
 
 ## Additional Setup: Models and Custom Nodes
@@ -230,5 +233,4 @@ Once ComfyUI Manager is installed:
     *   Check that your firewall is not blocking connections to the Kairo app or the ComfyUI backend.
     *   Make sure you have added the `--listen` flag to your ComfyUI batch file.
     *   
-![Welcome](https://raw.githubusercontent.com/ShivanshKandwal/Kairo---image-generation-and-editing-frontend-application-based-on-comfyui-backend/main/images_kairo/kairo_welcome.png)
-
+![Welcome](images_kairo/kairo_welcome.png)
